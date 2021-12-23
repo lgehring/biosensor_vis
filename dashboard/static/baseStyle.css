@@ -1,0 +1,81 @@
+/* variables*/
+:root {
+    --menu_width: 240px;
+    --menu_color: #2E8B57;
+    --font: Arial, Helvetica, sans-serif;
+    --menu_font_color: rgb(255, 255, 255);
+    --font_color: rgb(78, 75, 75);
+  }
+
+body{
+    margin-left: var(--menu_width);     
+    padding: 0px 10px;
+}
+
+h1{
+    font-family: var(--font);
+    color: var(--menu_color);
+    font-size: 30px;
+    font-weight: bold;
+}
+h2{
+    font-family: var(--font);
+    color: var(--font_color);
+    padding: 0px 0px 5px 20px;
+    font-size: 15px;
+    display: block;
+}
+a{
+    font-family: var(--font);
+    color: var(--font_color);
+    padding: 0px 0px 5px 10px;
+    font-size: 25px;
+    font-weight: bold;
+    text-decoration: none;
+}
+a:hover {
+    color: var(--menu_color);
+  }
+
+/* menu*/
+.menu {
+    height: 100%;           
+    width: var(--menu_width); 
+    position: fixed;                
+    z-index: 1;
+    top: 0; 
+    left: 0;
+    background-color: var(--menu_color); 
+  }
+  
+  /*menu links*/
+  .menu a {
+    padding: 8px 8px 8px 35px;
+    font-family: var(--font);
+    text-decoration: none;
+    font-size: 25px;
+    color: var(--menu_font_color);
+    display: block;
+  }
+
+  .menu a:hover {
+    color: #9c9eb6;
+  }
+
+  .menu a.active {
+    background-color: #9c9eb6;
+    color: white;
+  }
+
+  /*menu logo*/
+  .menu h {
+    font-weight: bold;
+    padding: 6px 8px 40px 16px;
+    text-decoration: none;
+    font-size: 35px;
+    color: var(--menu_font_color);
+    display: block;
+    font-family: var(--font)
+  }
+  
+  
