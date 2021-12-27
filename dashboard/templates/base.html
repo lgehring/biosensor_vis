@@ -1,0 +1,47 @@
+<!--
+ * @author Marit Bockstedte
+ *  
+-->
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='baseStyle.css') }}" >
+    <script src="https://d3js.org/d3.v7.min.js" charset="utf-8"></script>
+    <title>Mysteri Flask Example</title>
+</head>
+<body>
+    <div class="menu">
+        <h>BIOSENSOR</h> <!-- Website Logo -->
+        <a href="{{ url_for('Heartrate') }}">Heartrate</a>
+        <a href="{{ url_for('Steps') }}">Steps</a>
+        <a href="{{ url_for('Calories') }}">Calories</a>
+        <a href="{{ url_for('Temperature') }}">Temperature</a>
+        <a href="{{ url_for('Data_Analysis') }}">Data Analysis</a>
+        <a></a>
+        <a></a>
+        <a></a>
+        <a href="{{ url_for('base') }}">Home</a>
+        <a href="{{ url_for('About') }}">About</a>
+    </div>
+    <div id="info"><!-- Change for the subwebsite -->
+        <h1>Analyze your biosensor data using this visualization tool</h1>
+        <a href="{{ url_for('Heartrate') }}">Heartrate</a>
+        <h2>Display your Heartrate data</h2>
+        <a href="{{ url_for('Steps') }}">Steps</a>
+        <h2>Display your Steps data</h2>
+        <a href="{{ url_for('Calories') }}">Calories</a>
+        <h2>Display your Calories data</h2>
+        <a href="{{ url_for('Temperature') }}">Temperature</a>
+        <h2>Display your Temperature data</h2>
+        <a href="{{ url_for('Data_Analysis') }}">Data Analysis</a>
+        <h2>Analyze the correlation between your data and your patterns</h2>
+        <a href="{{ url_for('About') }}">About</a>
+        <h2>Get information about this website</h2>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
