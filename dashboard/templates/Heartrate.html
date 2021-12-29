@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div id="hrDiv"></div>
+<div id="hrTooltipDiv"></div>
 
-<script>
+<script type="text/javascript" >
     document.getElementById("info").innerHTML = "<h1>Heartrate Data</h1>";
-  </script>
+    dataset = {{ data | safe }};
+</script>
+
+<!--Run scatterplot visualization-->
+<script src="{{ url_for('static', filename='scatterplot.js') }}"></script>
 {% endblock %}
