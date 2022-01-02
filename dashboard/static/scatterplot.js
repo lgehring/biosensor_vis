@@ -3,28 +3,10 @@
  * based on: https://www.d3-graph-gallery.com/graph/scatter_tooltip.html and
  * https://www.d3-graph-gallery.com/graph/interactivity_brush.html#realgraph
  ***/
-// TODO
-// 1. Fix code for adding new dots when zooming, line 181
-// 2. Generalize for all sites
-
-let visparameter = "HR"
-let divName = "#hrDiv"
-let sampleSize = 500
-
-scatterplot(visparameter, divName, sampleSize)
-
-// Visualized the given parameter by uniformly sampling the given number of dots.
-// Zooming is possible via brushing.
+// Visualizes the given parameter by uniformly sampling the given number of dots.
+// Zooming is possible via brushing. When double clicking, zoom out and resample.
 // Enter name of visparameter as given in the CSV Header
 function scatterplot(visparameter, divName, sampleSize) {
-    let getRoundedDate = (minutes, d = new Date()) => {
-
-        let ms = 1000 * 60 * minutes; // convert minutes to ms
-        let roundedDate = new Date(Math.round(d.getTime() / ms) * ms);
-
-        return roundedDate
-    }
-
     // Set the dimensions and margins of the graph
     const margin = {top: 10, right: 30, bottom: 30, left: 60}, width = 1200 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
@@ -171,53 +153,93 @@ function scatterplot(visparameter, divName, sampleSize) {
             idleTimeout = null;
         }
 
+        // A function to round dates to the nearest x minutes
+        let getRoundedDate = (minutes, d = new Date()) => {
+
+            let ms = 1000 * 60 * minutes; // convert minutes to ms
+            let roundedDate = new Date(Math.round(d.getTime() / ms) * ms);
+
+            return roundedDate
+        }
+
         // A function that update the chart for given boundaries
         function updateChart(event) {
 
             extent = event.selection
+            let selectionCombined = selection.slice()
 
             // If no selection, back to initial coordinate. Otherwise, update X axis domain
             if (!extent) {
                 if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
                 x.domain([minTime, maxTime])
+                scatter
+                    .selectAll("circle")
+                    .remove()
+                // Add dots
+                scatter
+                    .selectAll("dot")
+                    .data(data.filter(function (d, i) {
+                        if (selection.includes(i) && eval("d." + visparameter) != null) {
+                            return i
+                        }
+                    }))
+                    .enter()
+                    .append("circle")
+                    .attr("cx", function (d) {
+                        return x(d3.isoParse(d.Time));
+                    })
+                    .attr("cy", function (d) {
+                        return y(eval("d." + visparameter));
+                    })
+                    .attr("r", 3)
+                    .style("fill", "red")
+                    .style("opacity", 0.3)
+                    .style("stroke", "white")
+                    .on("mouseover", mouseover)
+                    .on("mousemove", mousemove)
+                    .on("mouseleave", mouseleave)
             } else {
                 // Snap brush to full minute
                 x.domain([getRoundedDate(1, x.invert(extent[0])), getRoundedDate(1, x.invert(extent[1]))])
                 scatter.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+                // New dots
+                const minTimeEqual = (element) => element.Time.getTime() == x.domain()[0].getTime();
+                const maxTimeEqual = (element) => element.Time.getTime() == x.domain()[1].getTime();
+                minTimeInd = data.findIndex(minTimeEqual)
+                maxTimeInd = data.findIndex(maxTimeEqual)
+                let timeIndDiff = maxTimeInd - minTimeInd
+
+                // Substract the nuber of already plotted dots from the number of dots to add
+                function isInbetween(ind, element) {
+                    return ind[0] < element  && element < ind[1] && eval("data[element]." + visparameter) != null;
+                }
+
+                let sampleSizeNew = sampleSize - selectionCombined.filter(isInbetween.bind(this, [minTimeInd, maxTimeInd])).length
+                let selectionNew = Array.from({length: sampleSizeNew}, () => Math.floor(Math.random() * timeIndDiff + minTimeInd));
+                selectionCombined = [...selection, ...selectionNew];
+                scatter
+                    .selectAll("dot")
+                    .data(data.filter(function (d, i) {
+                        if (selectionNew.includes(i) && eval("d." + visparameter) != null) {
+                            return i
+                        }
+                    }))
+                    .enter()
+                    .append("circle")
+                    .attr("cx", function (d) {
+                        return x(d3.isoParse(d.Time));
+                    })
+                    .attr("cy", function (d) {
+                        return y(eval("d." + visparameter));
+                    })
+                    .attr("r", 3)
+                    .style("fill", "red")
+                    .style("opacity", 0.3)
+                    .style("stroke", "white")
+                    .on("mouseover", mouseover)
+                    .on("mousemove", mousemove)
+                    .on("mouseleave", mouseleave)
             }
-
-            const minTimeEqual = (element) => element.Time.getTime() == x.domain()[0].getTime();
-            const maxTimeEqual = (element) => element.Time.getTime() == x.domain()[1].getTime();
-            minTimeInd = data.findIndex(minTimeEqual)
-            maxTimeInd = data.findIndex(maxTimeEqual)
-            let timeIndDiff = maxTime - minTime
-            // New dots
-            selection = Array.from({length: sampleSize}, () => Math.floor(Math.random() * timeIndDiff + minTimeInd));
-
-            // TODO: Why doesn't this add the new dots?
-            scatter
-                .selectAll("dot")
-                .data(data.filter(function (d, i) {
-                    if (selection.includes(i) && eval("d." + visparameter) != null) {
-                        return i
-                    }
-                }))
-                .enter()
-                .append("circle")
-                .attr("cx", function (d) {
-                    return x(d3.isoParse(d.Time));
-                })
-                .attr("cy", function (d) {
-                    return y(eval("d." + visparameter));
-                })
-                .attr("r", 3)
-                .style("fill", "red")
-                .style("opacity", 0.3)
-                .style("stroke", "white")
-                .on("mouseover", mouseover)
-                .on("mousemove", mousemove)
-                .on("mouseleave", mouseleave)
-
             // Update axis and circle position
             xAxis.transition().duration(1000).call(d3.axisBottom(x))
             scatter
