@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 
-
-<script>
+<script type="text/javascript">
     document.getElementById("info").innerHTML = "<h1>Heartrate Data</h1>";
-  </script>
+    dataset = {{ data | safe }};
+</script>
+<script src="{{ url_for('static', filename='Heartrate.js') }}"></script>
+
 {% endblock %}
