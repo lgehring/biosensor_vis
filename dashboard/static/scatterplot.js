@@ -3,15 +3,14 @@
  * based on: https://www.d3-graph-gallery.com/graph/scatter_tooltip.html and
  * https://www.d3-graph-gallery.com/graph/interactivity_brush.html#realgraph
  ***/
+
 // Visualizes the given parameter by uniformly sampling the given number of dots.
 // Zooming is possible via brushing. When double clicking, zoom out and resample.
-// Enter name of visparameter as given in the CSV Header
-function scatterplot(visparameter, divName, sampleSize) {
-    // Set the dimensions and margins of the graph
+// Enter name of visparameter as given in the CSV Header and dotcolor as a string.
+function scatterplot(visparameter, divName, dotcolor, sampleSize) {
     const margin = {top: 10, right: 30, bottom: 30, left: 60}, width = 1200 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
 
-    // Append the svg object to the body of the page
     const svg = d3.select(divName)
         .append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -95,8 +94,8 @@ function scatterplot(visparameter, divName, sampleSize) {
 
         const mousemove = function (event, d) {
             tooltip
-                .html(`${eval("d." + visparameter)}`)
-                .style("left", (event.x + 20) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+                .html(eval("d." + visparameter) + ' | ' + d.Time)
+                .style("left", (event.x + 20) + "px")
                 .style("top", (event.y - 10) + "px")
         }
 
@@ -106,8 +105,8 @@ function scatterplot(visparameter, divName, sampleSize) {
         }
 
         // Add brushing
-        var brush = d3.brushX() // Add the brush feature using the d3.brush function
-            .extent([[0, 0], [width, height]]) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+        var brush = d3.brushX()
+            .extent([[0, 0], [width, height]])
             .on("end", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
 
         // Create the scatter variable: where both the circles and the brush take place
@@ -120,31 +119,38 @@ function scatterplot(visparameter, divName, sampleSize) {
             .attr("class", "brush")
             .call(brush);
 
+        // Uniformly sample the given number of points from the selection
         let selection = Array.from({length: sampleSize}, () => Math.floor(Math.random() * data.length));
 
-        // Add dots
-        scatter
-            .selectAll("dot")
-            .data(data.filter(function (d, i) {
-                if (selection.includes(i) && eval("d." + visparameter) != null) {
-                    return i
-                }
-            }))
-            .enter()
-            .append("circle")
-            .attr("cx", function (d) {
-                return x(d3.isoParse(d.Time));
-            })
-            .attr("cy", function (d) {
-                return y(eval("d." + visparameter));
-            })
-            .attr("r", 3)
-            .style("fill", "red")
-            .style("opacity", 0.3)
-            .style("stroke", "white")
-            .on("mouseover", mouseover)
-            .on("mousemove", mousemove)
-            .on("mouseleave", mouseleave)
+        // Define dotPlotting function and add dots
+        function plotDots(filterFunction) {
+            scatter
+                .selectAll("dot")
+                .data(data.filter(filterFunction))
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) {
+                    return x(d3.isoParse(d.Time));
+                })
+                .attr("cy", function (d) {
+                    return y(eval("d." + visparameter));
+                })
+                .attr("r", 3)
+                .style("fill", dotcolor)
+                .style("opacity", 0.5)
+                .style("stroke", "white")
+                .on("mouseover", mouseover)
+                .on("mousemove", mousemove)
+                .on("mouseleave", mouseleave)
+        }
+
+        // Define filter function for dot plotting
+        const selectionIncludes = function (d, i) {
+            if (selection.includes(i) && eval("d." + visparameter) != null) {
+                return i
+            }
+        }
+        plotDots(selectionIncludes)
 
         // A function that set idleTimeOut to null
         var idleTimeout
@@ -162,9 +168,8 @@ function scatterplot(visparameter, divName, sampleSize) {
             return roundedDate
         }
 
-        // A function that update the chart for given boundaries
+        // A function that updates the chart for given boundaries
         function updateChart(event) {
-
             extent = event.selection
             let selectionCombined = selection.slice()
 
@@ -176,32 +181,11 @@ function scatterplot(visparameter, divName, sampleSize) {
                     .selectAll("circle")
                     .remove()
                 // Add dots
-                scatter
-                    .selectAll("dot")
-                    .data(data.filter(function (d, i) {
-                        if (selection.includes(i) && eval("d." + visparameter) != null) {
-                            return i
-                        }
-                    }))
-                    .enter()
-                    .append("circle")
-                    .attr("cx", function (d) {
-                        return x(d3.isoParse(d.Time));
-                    })
-                    .attr("cy", function (d) {
-                        return y(eval("d." + visparameter));
-                    })
-                    .attr("r", 3)
-                    .style("fill", "red")
-                    .style("opacity", 0.3)
-                    .style("stroke", "white")
-                    .on("mouseover", mouseover)
-                    .on("mousemove", mousemove)
-                    .on("mouseleave", mouseleave)
+                plotDots(selectionIncludes)
             } else {
                 // Snap brush to full minute
                 x.domain([getRoundedDate(1, x.invert(extent[0])), getRoundedDate(1, x.invert(extent[1]))])
-                scatter.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+                scatter.select(".brush").call(brush.move, null)
                 // New dots
                 const minTimeEqual = (element) => element.Time.getTime() == x.domain()[0].getTime();
                 const maxTimeEqual = (element) => element.Time.getTime() == x.domain()[1].getTime();
@@ -211,34 +195,20 @@ function scatterplot(visparameter, divName, sampleSize) {
 
                 // Substract the nuber of already plotted dots from the number of dots to add
                 function isInbetween(ind, element) {
-                    return ind[0] < element  && element < ind[1] && eval("data[element]." + visparameter) != null;
+                    return ind[0] < element && element < ind[1] && eval("data[element]." + visparameter) != null;
                 }
 
                 let sampleSizeNew = sampleSize - selectionCombined.filter(isInbetween.bind(this, [minTimeInd, maxTimeInd])).length
                 let selectionNew = Array.from({length: sampleSizeNew}, () => Math.floor(Math.random() * timeIndDiff + minTimeInd));
                 selectionCombined = [...selection, ...selectionNew];
-                scatter
-                    .selectAll("dot")
-                    .data(data.filter(function (d, i) {
-                        if (selectionNew.includes(i) && eval("d." + visparameter) != null) {
-                            return i
-                        }
-                    }))
-                    .enter()
-                    .append("circle")
-                    .attr("cx", function (d) {
-                        return x(d3.isoParse(d.Time));
-                    })
-                    .attr("cy", function (d) {
-                        return y(eval("d." + visparameter));
-                    })
-                    .attr("r", 3)
-                    .style("fill", "red")
-                    .style("opacity", 0.3)
-                    .style("stroke", "white")
-                    .on("mouseover", mouseover)
-                    .on("mousemove", mousemove)
-                    .on("mouseleave", mouseleave)
+
+                // Define new filter Function
+                const selectionNewIncludes = function (d, i) {
+                    if (selectionNew.includes(i) && eval("d." + visparameter) != null) {
+                        return i
+                    }
+                }
+                plotDots(selectionNewIncludes)
             }
             // Update axis and circle position
             xAxis.transition().duration(1000).call(d3.axisBottom(x))
