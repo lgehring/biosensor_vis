@@ -95,7 +95,7 @@ function scatterplot(visparameter, divName, sampleSize) {
 
         const mousemove = function (event, d) {
             tooltip
-                .html(`${eval("d." + visparameter)}`)
+                .html(eval("d." + visparameter) + ' | ' + d.Time)
                 .style("left", (event.x + 20) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
                 .style("top", (event.y - 10) + "px")
         }
