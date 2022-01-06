@@ -75,7 +75,7 @@ function scatterplot(visparameter, divName, dotcolor, sampleSize) {
             .attr("y", 0);
 
         // Add a tooltip div
-        const tooltip = d3.select("#hrDiv")
+        const tooltip = d3.select(divName)
             .append("div")
             .style("position", "absolute")
             .style("opacity", 0)
