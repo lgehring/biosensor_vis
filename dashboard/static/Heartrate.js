@@ -1,6 +1,7 @@
 /***
  * @author Nadja Volkmann 
  ***/
+// Inspired by: https://www.d3-graph-gallery.com/graph/line_brushZoom.html 
 
 // set svg dimensions and margins
 const svgWidth = 800 ;
@@ -17,8 +18,10 @@ let svg = d3.select("#HRplot")
   .append("g")
   .attr("transform","translate(" + margin.left + "," + margin.top + ")");
 
+// parse the time
 var parseTime = d3.timeParse("%Y-%m-%d %H:%M:00+00:00");
 
+// convert each value to correct datatype
 var rowConverter = function(d) {
     return {
         time: parseTime(d.Time),
@@ -83,6 +86,7 @@ var rowConverter = function(d) {
 
     function time_start() { return String(xScale.domain()[0]).split(' ').slice(0,5).join(' ') }
     function time_end() { return String(xScale.domain()[1]).split(' ').slice(0,5).join(' ') }
+    
     svg.append("text")
       .attr("class", "xLabel")
       .attr("text-anchor", "end")
