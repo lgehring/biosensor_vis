@@ -1,8 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='barChartStyles.css') }}" >
+<div id = "ButtonMonth" class="Button">
+  Months
+</div>
+<div id = "ButtonWeek" class="Button">
+  Weeks
+</div>
+<div id = "ButtonDay" class="Button">
+  Days
+  </div>
+<div id = "ButtonHour" class="Button">
+  Hours
+  </div>
+<div id="barChart"></div>
+<script type="text/javascript" >
+      document.getElementById("info").innerHTML = "<h1>Steps Data</h1>";
+      dataset = {{ data | safe }};
+</script>
 
-<script>
-    document.getElementById("info").innerHTML = "<h1>Steps Data</h1>";
-  </script>
+<script src="{{ url_for('static', filename='barChart.js') }}"></script>
 
 {% endblock %}
