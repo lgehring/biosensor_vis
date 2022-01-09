@@ -1,5 +1,4 @@
 // TODO:
-// Brushing
 // Annotations
 // Styling
 // Comments
@@ -18,7 +17,6 @@ var parseDateMonths = d3.timeFormat("%b %Y");
 
 function getTickArray(dataArray){
 		if (dataArray.length <= 5) {
-			console.log(dataArray.map(d => d.date))
 			return dataArray.map(d => d.date)
 		}
     const indicesBetweenPoints = Math.round(dataArray.length/12)
@@ -35,7 +33,7 @@ function getTickArray(dataArray){
 
 function cutArray(array, start, end){
 	startIndex = 0;
-	endIndex = 0;
+	endIndex = array.length - 1;
 	i = 0
 	iterator = array.values()
 	for (const value of iterator){
@@ -64,15 +62,16 @@ let svg = d3.select("#barChart")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 const render = (data, startDate, endDate) => {
+	console.log(data)
 	svg.selectAll('*').remove();
 	if(data.constructor === Array){
-		data = dataArray
+		dataArray = data
 		dataArray = cutArray(dataArray, startDate, endDate)
-		console.log(dataArray)
 	} else {
 		dataArray = Array.from(data, ([date, value]) => ({ date, value }));
 		originalData = dataArray.slice() //copies the array, so when used double clicks, this can be drawn
 	}
+	console.log(dataArray)
 
   xScale = d3.scaleBand()
     .domain(dataArray.map(d => d.date))
@@ -138,10 +137,13 @@ const render = (data, startDate, endDate) => {
     const brusher = svg.append("g")
       .call(brush)
 
+		svg.on("dblclick",function(){
+			 render(originalData, originalData[0], originalData.at(-1))
+	    });
+
 };
 
 const updateChart = event => {
-	setTimeout(() => {  console.log("Updating..."); }, 20000);
   extent = event.selection
 	if (extent == null){
 		return
