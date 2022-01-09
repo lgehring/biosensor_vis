@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+<div id="hrDiv"></div>
 
 <script type="text/javascript">
     document.getElementById("info").innerHTML = "<h1>Heartrate Data</h1>";
@@ -8,7 +9,7 @@
 
 <!--Run lineplot visualization-->
 <script src="{{ url_for('static', filename='lineplot.js') }}"></script>
+
 <body onload="lineplot('HR', '#hrDiv', 'red')">
-{% endblock %}
 
 {% endblock %}
