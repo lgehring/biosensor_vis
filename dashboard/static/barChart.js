@@ -1,6 +1,5 @@
 // TODO:
 // Annotations
-// Styling
 // Comments
 // Function of script
 
@@ -19,7 +18,7 @@ function getTickArray(dataArray){
 		if (dataArray.length <= 5) {
 			return dataArray.map(d => d.date)
 		}
-    const indicesBetweenPoints = Math.round(dataArray.length/12)
+    const indicesBetweenPoints = Math.round(dataArray.length/6)
     tickArray = []
     for (i = 0; i <= dataArray.length; i++){
       if (i%indicesBetweenPoints == 0){
@@ -50,7 +49,7 @@ function cutArray(array, start, end){
 // set svg dimensions and margins
 const svgWidth = 1200;
 const svgHeight = 600;
-const margin = {top: 10, right: 30, bottom: 50, left: 75}
+const margin = {top: 60, right: 30, bottom: 60, left: 100}
 
 // append the svg object to the body of the page
 let svg = d3.select("#barChart")
@@ -61,8 +60,7 @@ let svg = d3.select("#barChart")
   .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-const render = (data, startDate, endDate) => {
-	console.log(data)
+const render = (data, startDate, endDate, title) => {
 	svg.selectAll('*').remove();
 	if(data.constructor === Array){
 		dataArray = data
@@ -71,11 +69,22 @@ const render = (data, startDate, endDate) => {
 		dataArray = Array.from(data, ([date, value]) => ({ date, value }));
 		originalData = dataArray.slice() //copies the array, so when used double clicks, this can be drawn
 	}
-	console.log(dataArray)
+
+	svg.append("text")
+		.attr('class', 'chartTitle')
+		.style("font-family", "sans-serif")
+		.style("font-size", "2.3em")
+		.style("fill", "rgb(108, 105, 107)")
+		.style("font-weight", "bold")
+		.attr('y', svgHeight -625)
+		.attr('x', svgWidth/2 + 25)
+		.attr('text-anchor', 'middle')
+		.text(title);
 
   xScale = d3.scaleBand()
     .domain(dataArray.map(d => d.date))
     .range([0, svgWidth])
+		.padding(0.1)
 
   const ticks = getTickArray(dataArray)
 
@@ -87,7 +96,7 @@ const render = (data, startDate, endDate) => {
     .call(xAxis)
   //xAxisGroup.selectAll('.domain').remove();
 
-  xAxisOffset = 40
+  xAxisOffset = 55
   svg.append('text')
       .attr('class', 'axisLabel')
       .attr('y', svgHeight + xAxisOffset)
@@ -104,7 +113,7 @@ const render = (data, startDate, endDate) => {
   const yAxisGroup = svg.append('g')
     .call(yAxis)
 
-  yAxisOffset = -60
+  yAxisOffset = -70
   svg.append('text')
     .attr('class', 'axisLabel')
     .attr('y', yAxisOffset)
@@ -117,26 +126,27 @@ const render = (data, startDate, endDate) => {
     .filter(function (d) { return d === 0;  })
     .remove();
 
-    svg.selectAll("rect")
-    .data(dataArray)
-    .enter()
-    .append("rect")
-    .attr("x", d => xScale(d.date))
-    .attr("y", d => yScale(d.value))
-    .attr("height", d => svgHeight - yScale(d.value))
-    .attr("width", xScale.bandwidth())
-    .append("title")
-      .text(d => "Time Interval: " + d.date + "\n" + "Steps: " + d.value)
-
-
     // Add brushing
     brush = d3.brushX()
       .extent([[0,0], [svgWidth,svgHeight]])
       .on("end", updateChart)
 
-    const brusher = svg.append("g")
-      .call(brush)
+	  const brusher = svg.append("g")
 
+			console.log(dataArray)
+			svg.selectAll("rect")
+			.data(dataArray)
+			.enter()
+			.append("rect")
+			.attr("class", "bars")
+			.attr("x", d => xScale(d.date))
+			.attr("y", d => yScale(d.value))
+			.attr("height", d => svgHeight - yScale(d.value))
+			.attr("width", xScale.bandwidth())
+			.append("title")
+				.text(d => "Date " + d.date + "\n" + "Steps: " + d.value)
+
+		brusher.call(brush)
 		svg.on("dblclick",function(){
 			 render(originalData, originalData[0], originalData.at(-1))
 	    });
@@ -168,20 +178,28 @@ d3.csv(dataset).then(data =>{
     nestedDataWeeks = d3.rollup(data, v => d3.sum(v,d => d.Steps), d => d.Weeks)
     nestedDataMonths = d3.rollup(data, v => d3.sum(v,d => d.Steps), d => d.Months)
 
+		var title = "Accumulated steps for every month"
+		render(nestedDataMonths, nestedDataMonths[0], nestedDataMonths[-1], title)
+
     buttonHour_div.addEventListener("click", function(){
-        render(nestedDataHours, nestedDataHours[0], nestedDataHours[-1])
+				title = "Accumulated steps for every hour"
+        render(nestedDataHours, nestedDataHours[0], nestedDataHours[-1], title)
     })
 
     buttonDay_div.addEventListener("click", function(){
-        render(nestedDataDays, nestedDataDays[0], nestedDataDays[-1])
+				title = "Accumulated steps for every day"
+        render(nestedDataDays, nestedDataDays[0], nestedDataDays[-1], title)
+
     })
 
     buttonWeek_div.addEventListener("click", function(){
-        render(nestedDataWeeks, nestedDataWeeks[0], nestedDataWeeks[-1])
+			 	title = "Accumulated steps for every week"
+        render(nestedDataWeeks, nestedDataWeeks[0], nestedDataWeeks[-1], title)
     })
 
     buttonMonth_div.addEventListener("click", function(){
-        render(nestedDataMonths, nestedDataMonths[0], nestedDataMonths[-1])
+			  title = "Accumulated steps for every month"
+        render(nestedDataMonths, nestedDataMonths[0], nestedDataMonths[-1], title)
     })
 
   })
