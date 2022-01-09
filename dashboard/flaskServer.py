@@ -21,7 +21,7 @@ def base():
 
 @app.route('/Heartrate')
 def Heartrate():
-    return render_template('Heartrate.html', data="'static/biosensors_all_dates.csv'")
+    return render_template('Heartrate.html', data="'static/data/biosensors_all_dates.csv'")
 
 @app.route('/Steps')
 def Steps():

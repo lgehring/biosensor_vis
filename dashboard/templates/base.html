@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='baseStyle.css') }}" >
     <script src="https://d3js.org/d3.v7.min.js" charset="utf-8"></script>
-    <title>Mysteri Flask Example</title>
+    <title>Biosensor Data Visualization</title>
 </head>
 <body>
     <div class="menu">
@@ -24,7 +24,7 @@
         <a href="{{ url_for('base') }}">Home</a>
         <a href="{{ url_for('About') }}">About</a>
     </div>
-    <div id="info"><!-- Change for the subwebsite -->
+    <div id="info"><!-- Change for the sub-website -->
         <h1>Analyze your biosensor data using this visualization tool</h1>
         <a href="{{ url_for('Heartrate') }}">Heartrate</a>
         <h2>Display your Heartrate data</h2>
