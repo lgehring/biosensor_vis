@@ -15,7 +15,7 @@
   transition: all 0.3s ease;
   font-size: 18px;
   margin-bottom: 70px;
-  margin-top: 40px;
+  margin-top: 10px;
   border-color: rgba(40, 0, 159, 0.44);
 }
 
@@ -27,13 +27,29 @@
   border-radius: 0px 15px 15px 0px
 }
 
-
-
 .Button:hover{
   cursor: pointer;
   background: rgb(40, 0, 159);
   color: white;
 }
+
+#barChart{
+  margin-bottom: 30px;
+}
+
+.stat{
+  font-family: sans-serif;
+  margin-left: 50px;
+  padding: 1px;
+}
+
+#statText{
+  font-weight: bold;
+  color: rgb(88, 88, 88);
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 
 .tick text{
   font-size: 1.2em;

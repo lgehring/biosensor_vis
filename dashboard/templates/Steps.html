@@ -16,6 +16,12 @@
   </div>
 </div>
 <div id="barChart"></div>
+<span class = "stat" id = "statText"> To annotate statistics, check the below!
+  </span>
+<div class = "stat">
+  <input type="checkbox" id="stat" name="stat">
+  <label for="Maximum">Enable annotations.</label>
+</div>
 <script type="text/javascript" >
       document.getElementById("info").innerHTML = "<h1>Steps Data</h1>";
       dataset = {{ data | safe }};

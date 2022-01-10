@@ -1,12 +1,8 @@
-// TODO:
-// Annotations
-// Comments
-// Function of script
-
 const buttonMonth_div = document.getElementById("ButtonMonth");
 const buttonWeek_div = document.getElementById("ButtonWeek");
 const buttonDay_div = document.getElementById("ButtonDay");
 const buttonHour_div = document.getElementById("ButtonHour");
+const statCheck_div = document.getElementById("stat");
 
 // Helping functions:
 var parseDateHours = d3.timeFormat("%d/%m/%Y %H:00");
@@ -49,7 +45,7 @@ function cutArray(array, start, end){
 // set svg dimensions and margins
 const svgWidth = 1200;
 const svgHeight = 600;
-const margin = {top: 60, right: 30, bottom: 60, left: 100}
+const margin = {top: 60, right: 0, bottom: 60, left: 100}
 
 // append the svg object to the body of the page
 let svg = d3.select("#barChart")
@@ -104,7 +100,7 @@ const render = (data, startDate, endDate, title) => {
       .attr('text-anchor', 'middle')
       .text("Time Interval");
 
-  const yScale = d3.scaleLinear()
+  yScale = d3.scaleLinear()
     .domain([0, d3.max(dataArray, d => d.value)])
     .range([svgHeight, 0])
 
@@ -146,6 +142,11 @@ const render = (data, startDate, endDate, title) => {
 			.append("title")
 				.text(d => "Date " + d.date + "\n" + "Steps: " + d.value)
 
+		  console.log("Hello again")
+			if (annotation){
+					annotateStats()
+				}
+
 		brusher.call(brush)
 		svg.on("dblclick",function(){
 			 render(originalData, originalData[0], originalData.at(-1))
@@ -164,6 +165,39 @@ const updateChart = event => {
 	render(dataArray, selected[0], selected.at(-1))
 }
 
+const annotateStats = () => {
+  values = dataArray.map(d => d.value)
+	valuesWithoutZero = values.filter(number => number != 0)
+	min = d3.min(valuesWithoutZero)
+	max= d3.max(values)
+	avg = d3.mean(values)
+	stats = new Map()
+	stats.set("Minimum", min); stats.set("Maximum", max); stats.set("Average", avg)
+	statsArray = Array.from(stats, ([title, stat]) => ({title, stat}));
+	console.log(statsArray)
+
+	const colors = ["rgb(61, 222, 77)", "rgb(240, 62, 28)", "rgb(254, 231, 24)"]
+	var color = d3.scaleOrdinal()
+		.domain(statsArray.map(d => d.title))
+		.range(colors)
+
+ 	svg.selectAll("lines")
+		.data(statsArray)
+		.enter()
+  	.append("line")
+		.attr("x1", 0)
+		.attr("x2", svgWidth)
+		.attr("y1", d => yScale(d.stat))
+		.attr("y2", d => yScale(d.stat))
+		.style("stroke", d => color(d))
+		.style("stroke-width", 5)
+		.style("stroke-dasharray", ("6, 2"))
+		.append("title")
+		.text(d => d.title + ": " + d.stat)
+
+	console.log("There should be three annotations")
+}
+
 d3.csv(dataset).then(data =>{
     data.forEach(d => {
       d.Steps = +d.Steps;
@@ -177,6 +211,17 @@ d3.csv(dataset).then(data =>{
     nestedDataDays = d3.rollup(data, v => d3.sum(v,d => d.Steps), d => d.Days)
     nestedDataWeeks = d3.rollup(data, v => d3.sum(v,d => d.Steps), d => d.Weeks)
     nestedDataMonths = d3.rollup(data, v => d3.sum(v,d => d.Steps), d => d.Months)
+
+		annotation = false
+		statCheck_div.addEventListener("change", d => {
+		if (d.target.checked){
+			annotation = true
+			annotateStats()
+		} else {
+			annotation = false
+			svg.selectAll("line").remove()
+		}
+ 	 })
 
 		var title = "Accumulated steps for every month"
 		render(nestedDataMonths, nestedDataMonths[0], nestedDataMonths[-1], title)
@@ -201,5 +246,7 @@ d3.csv(dataset).then(data =>{
 			  title = "Accumulated steps for every month"
         render(nestedDataMonths, nestedDataMonths[0], nestedDataMonths[-1], title)
     })
+
+
 
   })
