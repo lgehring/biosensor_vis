@@ -7,7 +7,8 @@
 // Visualizes the given parameter by uniformly sampling the given number of dots.
 // Zooming is possible via brushing. When double clicking, zoom out and resample.
 // Enter name of visparameter as given in the CSV Header and dotcolor as a string.
-function scatterplot(visparameter, divName, dotcolor, sampleSize) {
+// Optionally takes a start and end date for initial zoom window as datetime objects.
+function scatterplot(visparameter, divName, dotcolor, sampleSize, start=null, end=null) {
     const margin = {top: 10, right: 30, bottom: 30, left: 60}, width = 1200 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
 
@@ -17,6 +18,15 @@ function scatterplot(visparameter, divName, dotcolor, sampleSize) {
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    // A function to round dates to the nearest x minutes
+    let getRoundedDate = (minutes, d = new Date()) => {
+
+        let ms = 1000 * 60 * minutes; // convert minutes to ms
+        let roundedDate = new Date(Math.round(d.getTime() / ms) * ms);
+
+        return roundedDate
+    }
 
     // Read data
     d3.csv(dataset).then(function (data) {
@@ -42,28 +52,58 @@ function scatterplot(visparameter, divName, dotcolor, sampleSize) {
         const maxVis = d3.max(data, function (d) {
             return eval("d." + visparameter);
         });
+        const minVis = d3.min(data, function (d) {
+            return eval("d." + visparameter);
+        });
         let minTime = d3.min(data, function (d) {
             return d.Time;
         });
         let maxTime = d3.max(data, function (d) {
             return d.Time;
         });
-        // --------------------------------------------------------------------------
 
+        // First axis limits
+        let minTimeTemp = minTime
+        let maxTimeTemp = maxTime
+
+        // Choose first axis limits as given
+        if (start != null && end != null && start > minTime && end < maxTime){
+            // round to nearest minute
+            start = getRoundedDate(1, start)
+            end = getRoundedDate(1, end)
+
+            minTimeTemp = start
+            maxTimeTemp = end
+        }
+        // --------------------------------------------------------------------------
         // Add X axis
         const x = d3.scaleTime()
-            .domain([minTime, maxTime])
+            .domain([minTimeTemp, maxTimeTemp])
             .range([0, width]);
         let xAxis = svg.append("g")
             .attr("transform", `translate(0, ${height})`)
             .call(d3.axisBottom(x));
+        svg.append("text")
+            .attr("class", "x label")
+            .attr("text-anchor", "end")
+            .attr("x", width - 10)
+            .attr("y", height - 10)
+            .text("Time");
 
         // Add Y axis
         const y = d3.scaleLinear()
-            .domain([0, maxVis])
+            .domain([minVis, maxVis])
             .range([height, 0]);
         let yAxis = svg.append("g")
             .call(d3.axisLeft(y));
+        svg.append("text")
+            .attr("class", "y label")
+            .attr("text-anchor", "end")
+            .attr("y", 5)
+            .attr("x", -5)
+            .attr("dy", "1em")
+            .attr("transform", "rotate(-90)")
+            .text(visparameter);
 
         // Add a clipPath: everything out of this area won't be drawn.
         var clip = svg.append("defs").append("svg:clipPath")
@@ -159,15 +199,6 @@ function scatterplot(visparameter, divName, dotcolor, sampleSize) {
             idleTimeout = null;
         }
 
-        // A function to round dates to the nearest x minutes
-        let getRoundedDate = (minutes, d = new Date()) => {
-
-            let ms = 1000 * 60 * minutes; // convert minutes to ms
-            let roundedDate = new Date(Math.round(d.getTime() / ms) * ms);
-
-            return roundedDate
-        }
-
         // A function that updates the chart for given boundaries
         function updateChart(event) {
             extent = event.selection
@@ -209,6 +240,10 @@ function scatterplot(visparameter, divName, dotcolor, sampleSize) {
                     }
                 }
                 plotDots(selectionNewIncludes)
+
+                // Print new minTime and maxTime
+                // console.log(x.domain()[0])
+                // console.log(x.domain()[1])
             }
             // Update axis and circle position
             xAxis.transition().duration(1000).call(d3.axisBottom(x))
