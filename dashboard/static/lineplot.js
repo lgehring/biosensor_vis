@@ -1,7 +1,8 @@
 /***
  * @author Nadja Volkmann 
  ***/
-// Inspired by: https://www.d3-graph-gallery.com/graph/line_brushZoom.html 
+/*** Inspired by: https://www.d3-graph-gallery.com/graph/line_brushZoom.html 
+                  https://www.d3-graph-gallery.com/graph/line_cursor.html ***/
 
 function lineplot(visparameter, divName, color) {
 
@@ -72,12 +73,10 @@ d3.csv(dataset, rowConverter).then(function(data) {
   var line = svg.append('g')
     .attr("clip-path", "url(#clip)")
 
-
-
   // This allows to find the closest X index of the mouse:
   var bisect = d3.bisector(function(d) { return d.Time; }).left;
 
-  // Create the circle that travels along the curve of chart
+  // Create the circle that moves along line of the chart
   var focus = svg
     .append('g')
     .append('circle')
@@ -86,7 +85,7 @@ d3.csv(dataset, rowConverter).then(function(data) {
       .attr('r', 4)
       .style("opacity", 0)
 
-  // Create the text that travels along the curve of chart
+  // Create the text that moves along line
   var focusText = d3.select(divName)
     .append('div')
     .style("position", "absolute")
@@ -95,7 +94,6 @@ d3.csv(dataset, rowConverter).then(function(data) {
     .style("border", "none")
     .style("border-radius", "7px")
     .style("padding", "10px")
-
 
   // Add the line
   line.append("path")
@@ -112,28 +110,14 @@ d3.csv(dataset, rowConverter).then(function(data) {
     .y(function(d) { return yScale(eval("d." + visparameter)); }))
 
 
-  
-
-  // Create a rect on top of the svg area: this rectangle recovers mouse position
-  /*svg
-    .append('rect')
-    .style("fill", "none")
-    .style("pointer-events", "all")
-    .attr('width', svgWidth)
-    .attr('height', svgHeight)
-    .on('mouseover', mouseover)
-    .on('mousemove', (event,d) => {mousemove(event,d)})
-    .on('mouseout', mouseout);*/
-
-
-  // What happens when the mouse move -> show the annotations at the right positions.
+  // What happens when the mouse move -> show the annotations at the right positions
   function mouseover() {
     focus.style("opacity", 1)
     focusText.style("opacity",1)
   }
 
   function mousemove(event, d) {
-    // recover coordinate we need
+    // get current x-coordinate
     var x0 = xScale.invert(d3.pointer(event, this)[0]-242-margin.left);
     console.log(d3.pointer(event, this)[0]);
     var i = bisect(data, x0, 1),
@@ -141,16 +125,17 @@ d3.csv(dataset, rowConverter).then(function(data) {
     d1 = data[i],
     d = x0 - d0.Time > d1.Time - x0 ? d1 : d0;
 
-    selectedData = d;
+    // update the tooltip
     focus
-      .attr("cx", xScale(selectedData.Time))
-      .attr("cy", yScale(eval("selectedData." + visparameter)))
+      .attr("cx", xScale(d.Time))
+      .attr("cy", yScale(eval("d." + visparameter)))
     focusText
-      .text("x: " + String(selectedData.Time).split(' ').slice(0,5).join(' ') + "  -  " + "y: \n" + eval("selectedData." + visparameter))
+      .text("x: " + String(d.Time).split(' ').slice(0,5).join(' ') + "  -  " + "y: \n" + eval("d." + visparameter))
       .style("left", (d3.pointer(event, this)[0]+20) + "px")
       .style("top", (d3.pointer(event, this)[1]+20) + "px")
-
     }
+
+  // what happens when mouse leaves the line 
   function mouseout() {
     focus.style("opacity", 0)
     focusText.style("opacity", 0)
@@ -183,9 +168,6 @@ d3.csv(dataset, rowConverter).then(function(data) {
 
   // A function that update the chart for given boundaries
   function updateChart({selection}) {
-
-    // What are the selected boundaries?
-    //extent = d3.event.selection
 
     // If no selection, back to initial coordinate. Otherwise, update X axis domain
     if(!selection){

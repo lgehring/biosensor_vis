@@ -7,14 +7,14 @@
     dataset = {{ data | safe }};
 </script>
 
-<!--Run lineplot visualization-->
-<!--
-<script src="{{ url_for('static', filename='lineplot.js') }}"></script>
-<body onload="lineplot('HR', '#hrDiv', 'red')">    
+<!--Run scatterplot visualization-->
+<!--<script src="{{ url_for('static', filename='scatterplot.js') }}"></script>
+<body onload="scatterplot('HR', '#hrDiv', 'red', 250)">
 -->
 
+<!--Run lineplot visualization-->
+<script src="{{ url_for('static', filename='lineplot.js') }}"></script>
+<body onload="lineplot('HR', '#hrDiv', 'red')">    
 
-<!--Run scatterplot visualization-->
-<script src="{{ url_for('static', filename='scatterplot.js') }}"></script>
-<body onload="scatterplot('HR', '#hrDiv', 'red', 250)">
 {% endblock %}
+

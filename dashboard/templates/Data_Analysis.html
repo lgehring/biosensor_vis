@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
+<div id='chordgraph'></div>
 
 <script>
     document.getElementById("info").innerHTML = "<h1>Data Analysis</h1>";
-  </script>
+    dataset = {{ data | safe }};
+</script>
 
+<script src="{{ url_for ('static', filename='/statistics.js-master/statistics.min.js') }}" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='chordgraph.js') }}"></script>
+<!--Run chordgraph visualization-->
+<script src="{{ url_for('static', filename='chordgraph.js') }}"></script>
+<body onload="chordgraph('#chordgraph')">
 {% endblock %}
