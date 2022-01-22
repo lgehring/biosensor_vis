@@ -1,3 +1,6 @@
+/* @author: Marit Bockstedte*/
+
+
 /* variables*/
 :root {
     --menu_width: 240px;
@@ -11,6 +14,11 @@ body{
     margin-left: var(--menu_width);     
     padding: 0px 10px;
 }
+p{
+  font-family: var(--font);
+  color: var(--font_color);
+  font-size: 15px;
+}
 
 h1{
     font-family: var(--font);
@@ -22,14 +30,7 @@ h2{
     font-family: var(--font);
     color: var(--font_color);
     padding: 0px 0px 5px 20px;
-    font-size: 15px;
-    display: block;
-}
-p{
-    font-family: var(--font);
-    color: var(--font_color);
-    padding: 0px 0px 0px 20px;
-    font-size: 12px;
+    font-size: 20px;
     display: block;
 }
 a{
