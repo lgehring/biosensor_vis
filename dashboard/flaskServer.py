@@ -37,7 +37,7 @@ def Temperature():
 
 @app.route('/Data_Analysis')
 def Data_Analysis():
-    return render_template('Data_Analysis.html')
+    return render_template('Data_Analysis.html',  data="'static/data/biosensors_all_dates.csv'")
 
 @app.route('/About')
 def About():

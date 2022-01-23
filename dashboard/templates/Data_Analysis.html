@@ -1,7 +1,56 @@
 {% extends "base.html" %}
 {% block content %}
-<script >
+<script type="text/javascript">
     document.getElementById("info").innerHTML = "<h1>Data Analysis</h1>";
+    dataset = {{ data | safe }};
 </script>
 
+<!--Import statistics package-->
+<script src="{{ url_for('static', filename='statistics.js') }}"></script>
+<script src="{{ url_for('static', filename='d3-regression.js') }}"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<h2>Correlation Analysis</h2>
+
+<!--Choose variables via select item-->
+<select name="Variable1" id="v1">
+  <option value="None">Select Variable 1</option>
+  <option value='HR'>Heartrate</option>
+  <option value="Steps">Steps</option>
+  <option value="Calories">Calories</option>
+  <option value="Temperature">Temperature</option>
+</select>
+
+<select name="Variable2" id="v2">
+  <option value="None">Select Variable 2</option>
+  <option value='HR'>Heartrate</option>
+  <option value="Steps">Steps</option>
+  <option value="Calories">Calories</option>
+  <option value="Temperature">Temperature</option>
+</select>
+  
+<input id="sub" type="submit" value="Submit" />
+
+<p id="corr"> </p>
+<label class="container">Linear Regression
+  <input type="checkbox" id="linCheck">
+  <span class="checkmark" ></span></nobr>
+  <p id="linregr" style="white-space: pre"></p>
+</label>
+<label class="container">Quadratic Regression
+  <input type="checkbox" id="quadCheck">
+  <span class="checkmark"></span>
+</label>
+<p id="quadregr"></p>
+<label class="container">Polynomial Regression
+  <input type="checkbox" id="polCheck">
+  <span class="checkmark"></span>
+</label>
+<p id="polregr"> </p>
+
+<!--Correlation plot visualization-->
+<div id="corrPlot"></div>
+<script src="{{ url_for('static', filename='corr_plot.js') }}"></script>
+<body onload="correlationPlot('#corrPlot', 'blue', 250)">
 {% endblock %}
+  
