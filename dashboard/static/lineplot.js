@@ -4,7 +4,7 @@
 /*** Inspired by: https://www.d3-graph-gallery.com/graph/line_brushZoom.html 
                   https://www.d3-graph-gallery.com/graph/line_cursor.html ***/
 
-//test
+//testtest
 
 function lineplot(visparameter, divName, color) {
 
