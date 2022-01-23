@@ -1,20 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
 
+
 <script type="text/javascript" >
     document.getElementById("info").innerHTML = "<h1>Heartrate Data</h1>";
     dataset = {{ data | safe }};
 </script>
 
+<!--Run lineplot visualization-->
+<h3 id="hrTitle"></h3>
+<div id="hrDiv"></div>
+<script src="{{ url_for('static', filename='lineplot.js') }}"></script>
+<body onload="lineplot('HR', '#hrDiv', '#e0432f', 'hrTitle')"> 
+
+
+<!--Run scatterplot visualization on update
 <script src="{{ url_for('static', filename='scatterplot.js') }}"></script>
 
-<!--Run scatterplot visualization on update-->
-<h3 id="hrTitle">Title</h3>
+<h3 id="hrTitle"></h3>
 <label id="range">Enter number of dots to sample (500-10,000):</label>
 <input type="number" id="sampleSize" name="sampleSize" min="500" max="10000" value="500">
 <input type="submit" id="submit" value="Plot">
 <div id="hrDiv"></div>
+-->
 
-<!--Run scatterplot visualization on load-->
+<!--Run scatterplot visualization on load
 <body onload="scatterplot('HR', 'hrDiv', 'hrTitle', 'red', document.getElementById('sampleSize').value)">
+-->
+
 {% endblock %}

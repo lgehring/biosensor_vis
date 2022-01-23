@@ -1,12 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
+<div id="calDiv"></div>
 
-<div id="bubbleChart"></div>
-
-<script type="text/javascript" >
-    document.getElementById("info").innerHTML = "<h1>Calories Data</h1>";
-    dataset = {{ data | safe }};
+<script>
+  document.getElementById("info").innerHTML = "<h1>Calories Data</h1>";
+  dataset = {{ data | safe }};
 </script>
 
-<script src="{{ url_for('static', filename='bubbleChart.js') }}"></script>
+<!--Run lineplot visualization-->
+<!--
+<script src="{{ url_for('static', filename='lineplot.js') }}"></script>
+<body onload="lineplot('Calories', '#calDiv', 'orange')">
+-->
+
 {% endblock %}
