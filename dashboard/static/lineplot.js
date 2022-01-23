@@ -4,14 +4,12 @@
 /*** Inspired by: https://www.d3-graph-gallery.com/graph/line_brushZoom.html 
                   https://www.d3-graph-gallery.com/graph/line_cursor.html ***/
 
-//testtest
-
-function lineplot(visparameter, divName, color) {
+function lineplot(visparameter, divName, color, titleID) {
 
 // set svg dimensions and margins
 const svgWidth = 800 ;
 const svgHeight = 360;
-const margin = {top: 20, right: 30, bottom: 50, left: 50};
+const margin = {top: 20, right: 30, bottom: 40, left: 50};
 
 // append the svg object to the body of the page
 let svg = d3.select(divName)
@@ -92,9 +90,10 @@ d3.csv(dataset, rowConverter).then(function(data) {
     .append('div')
     .style("position", "absolute")
     .style("opacity", 0)
-    .style("background-color", "white")
+    .style("background-color", "black")
+    .style("color", "white")
     .style("border", "none")
-    .style("border-radius", "7px")
+    //.style("border-radius", "7px")
     .style("padding", "10px")
 
   // Add the line
@@ -115,7 +114,7 @@ d3.csv(dataset, rowConverter).then(function(data) {
   // What happens when the mouse move -> show the annotations at the right positions
   function mouseover() {
     focus.style("opacity", 1)
-    focusText.style("opacity",1)
+    focusText.style("opacity",0.8)
   }
 
   function mousemove(event, d) {
@@ -146,14 +145,31 @@ d3.csv(dataset, rowConverter).then(function(data) {
 
   function time_start() { return String(xScale.domain()[0]).split(' ').slice(0,5).join(' ') }
   function time_end() { return String(xScale.domain()[1]).split(' ').slice(0,5).join(' ') }
+  
+  // Define date format
+  let dateFormat = d3.timeFormat("%a %d.%m.%Y, %H:%M");
+
+  // Set title
+  document.getElementById(titleID).innerHTML = dateFormat(xScale.domain()[0].getTime()) + ' to ' + dateFormat(xScale.domain()[1].getTime())
 
   // adds x-axis label 
   svg.append("text")
     .attr("class", "xLabel")
     .attr("text-anchor", "end")
     .attr("x", svgWidth)
-    .attr("y", svgHeight + margin.top + 20)
-    .text(time_start() + " - " + time_end());
+    .attr("y", svgHeight + margin.bottom)
+    .text("Time");
+
+  // adds x-axis label 
+    svg.append("text")
+    .attr("class", "yLabel")
+    .attr("text-anchor", "end")
+    .attr("y", -margin.left)
+    .attr("x", 0)
+    .attr("dy", "1em")
+    .attr("transform", "rotate(-90)")
+    .text(visparameter);
+  
 
   // Add the brushing
   line
@@ -172,7 +188,7 @@ d3.csv(dataset, rowConverter).then(function(data) {
   function updateChart({selection}) {
 
     // If no selection, back to initial coordinate. Otherwise, update X axis domain
-    if(!selection){
+    if(!selection){ 
       if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // Executes idled() after 350 ms
       xScale.domain([ 4,8])
     }else{
@@ -183,7 +199,9 @@ d3.csv(dataset, rowConverter).then(function(data) {
   // Update axis and line 
   xAxis.transition().duration(500).call(d3.axisBottom(xScale))
   //newWidth = d3.select(".line").style("stroke-width") + 0.5
-  svg.select('.xLabel').text(time_start() + " - " + time_end());
+  //svg.select("."+titleID).text(time_start() + " - " + time_end());
+  document.getElementById(titleID).innerHTML = dateFormat(xScale.domain()[0].getTime()) + ' to ' + dateFormat(xScale.domain()[1].getTime())
+
 
   line
       .select('.line')
