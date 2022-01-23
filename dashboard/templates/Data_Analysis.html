@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+
 <div id='chordgraph'></div>
 
 <script type="text/javascript">
@@ -62,6 +63,5 @@
 <div id="corrPlot"></div>
 <script src="{{ url_for('static', filename='corr_plot.js') }}"></script>
 <body onload="correlationPlot('#corrPlot', 'blue', 250)">
-
 
 {% endblock %}

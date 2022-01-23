@@ -25,7 +25,7 @@ def Heartrate():
 
 @app.route('/Steps')
 def Steps():
-    return render_template('Steps.html',  data="'static/data/biosensors_all_dates.csv'")
+    return render_template('Steps.html', data="'static/data/biosensors_all_dates.csv'")
 
 @app.route('/Calories')
 def Calories():

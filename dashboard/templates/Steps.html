@@ -1,16 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
-<div id="stepsDiv"></div>
 
-<script>
-    document.getElementById("info").innerHTML = "<h1>Steps Data</h1>";
-    dataset = {{ data | safe }};
-  </script>
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='barChartStyles.css') }}" >
+<div id = "Buttons">
+<div id = "ButtonMonth" class="Button">
+  Months
+</div>
+<div id = "ButtonWeek" class="Button">
+  Weeks
+</div>
+<div id = "ButtonDay" class="Button">
+  Days
+  </div>
+<div id = "ButtonHour" class="Button">
+  Hours
+  </div>
+</div>
+<div id="barChart"></div>
+<span class = "stat" id = "statText"> To annotate statistics, check the below!
+  </span>
+<div class = "stat">
+  <input type="checkbox" id="stat" name="stat">
+  <label for="Maximum">Enable annotations.</label>
+</div>
+<script type="text/javascript" >
+      document.getElementById("info").innerHTML = "<h1>Steps Data</h1>";
+      dataset = {{ data | safe }};
+</script>
 
-<!--Run lineplot visualization-->
-<!--
-<script src="{{ url_for('static', filename='lineplot.js') }}"></script>
-<body onload="lineplot('Steps', '#stepsDiv', 'blue')">
--->
+<script src="{{ url_for('static', filename='barChart.js') }}"></script>
+<body onload="barChart">
 
 {% endblock %}
