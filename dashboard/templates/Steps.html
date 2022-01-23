@@ -1,8 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
+<div id="stepsDiv"></div>
 
 <script>
     document.getElementById("info").innerHTML = "<h1>Steps Data</h1>";
+    dataset = {{ data | safe }};
   </script>
+
+<!--Run lineplot visualization-->
+<!--
+<script src="{{ url_for('static', filename='lineplot.js') }}"></script>
+<body onload="lineplot('Steps', '#stepsDiv', 'blue')">
+-->
 
 {% endblock %}

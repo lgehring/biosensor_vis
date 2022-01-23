@@ -85,5 +85,11 @@ a:hover {
     display: block;
     font-family: var(--font)
   }
+
+  /*styling for chordgraph*/
+  .cg-titles, .cg-tick-labels {
+    font-family: var(--font);
+  }
+
   
   

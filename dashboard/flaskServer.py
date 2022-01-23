@@ -25,19 +25,19 @@ def Heartrate():
 
 @app.route('/Steps')
 def Steps():
-    return render_template('Steps.html')
+    return render_template('Steps.html',  data="'static/data/biosensors_all_dates.csv'")
 
 @app.route('/Calories')
 def Calories():
-    return render_template('Calories.html')
+    return render_template('Calories.html', data="'static/data/biosensors_all_dates.csv'")
 
 @app.route('/Temperature')
 def Temperature():
-    return render_template('Temperature.html')
+    return render_template('Temperature.html', data="'static/data/biosensors_all_dates.csv'")
 
 @app.route('/Data_Analysis')
 def Data_Analysis():
-    return render_template('Data_Analysis.html',  data="'static/data/biosensors_all_dates.csv'")
+    return render_template('Data_Analysis.html', data="'static/data/biosensors_all_dates.csv'")
 
 @app.route('/About')
 def About():

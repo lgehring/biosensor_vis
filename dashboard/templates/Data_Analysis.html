@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+<div id='chordgraph'></div>
 
 <script type="text/javascript">
     document.getElementById("info").innerHTML = "<h1>Data Analysis</h1>";
@@ -11,6 +12,13 @@
 <script src="{{ url_for('static', filename='d3-regression.js') }}"></script>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 
+<!--Run chordgraph visualization
+<script src="{{ url_for('static', filename='chordgraph.js') }}"></script>
+<body onload="chordgraph('#chordgraph')">
+-->
+
+
+<!--Run correlation analysis visualization-->
 <h2>Correlation Analysis</h2>
 
 <!--Choose variables via select item-->
@@ -49,8 +57,11 @@
 </label>
 <p id="polregr"> </p>
 
+
 <!--Correlation plot visualization-->
 <div id="corrPlot"></div>
 <script src="{{ url_for('static', filename='corr_plot.js') }}"></script>
 <body onload="correlationPlot('#corrPlot', 'blue', 250)">
+
+
 {% endblock %}
