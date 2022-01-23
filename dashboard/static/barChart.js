@@ -6,13 +6,15 @@ const buttonHour_div = document.getElementById("ButtonHour");
 const statCheck_div = document.getElementById("stat");
 
 // Helping functions:
-const parseDateMinutes = d3.timeFormat("%d/%m/%Y %H:%M");
-const parseDateHours = d3.timeFormat("%d/%m/%Y %H:00");
-const parseDateDays = d3.timeFormat("%d/%m/%Y");
+const parseDateMinutes = d3.timeFormat("%d.%m.%Y, %H:%M");
+const parseDateHours = d3.timeFormat("%d.%m.%Y, %H:00");
+const parseDateDays = d3.timeFormat("%d.%m.%Y");
 const parseDateWeeks = d3.timeFormat("CW %U/%Y");
 const parseDateMonths = d3.timeFormat("%b %Y");
+const parseDateTitle = d3.timeFormat("%a %d.%m.%Y, %H:%M")
 
 var enableDoubleClick = true;
+var arrayOfWeekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 // function which produces an array of the tick values in regular intervals
 // necessary because a bar chart makes a tick at all bars if no tick array is specified
@@ -62,47 +64,67 @@ function getWeekDays(week, year){
 	monday = new Date(borderDay)
 	borderDay.setDate(monday.getDate() + 6)
 	sunday = new Date(borderDay)
-  return [parseDateDays(monday), parseDateDays(sunday)];
+  return [monday, sunday];
 
 }
 
-function handleClick(date){
-	enableDoubleClick = true
+function getPrecision(date){
 	var datePrecision;
 	if (/[A-Za-z]{3}/.test(date)){
 		datePrecision = "Month"
 	} else if (date.includes("CW")){
 		datePrecision = "Week"
-	} else if (/[0-9]{2}\/[0-9]{2}\/[0-9]{4}\ [0-9]{2}:[0]{2}/.test(date)){
+	} else if (/[0-9]{2}\.[0-9]{2}\.[0-9]{4}, [0-9]{2}:[0]{2}/.test(date)){
 		datePrecision = "Hour"
-	} else if (/[0-9]{2}\/[0-9]{2}\/[0-9]{4}\ [0-9]{2}:[0-9]{2}/.test(date)){
+	} else if (/[0-9]{2}\.[0-9]{2}\.[0-9]{4}, [0-9]{2}:[0-9]{2}/.test(date)){
 		datePrecision = "Minute"
 	} else {
 		datePrecision = "Day"
 	}
+	return datePrecision
+}
+
+function getDaysInMonth(date){
+	month = ("0" + (date.getMonth() + 1)).slice(-2)
+	year = date.getFullYear()
+	daysInMonth = new Date(year, month, 0).getDate()
+	return daysInMonth
+}
+
+function parseEuropeanDate(input) {
+  var parts = input.match(/(\d+)/g);
+  return new Date(parts[2], parts[1]-1, parts[0]);
+}
+
+function getWeekDay(date){
+	dateDateTime = parseEuropeanDate(date)
+	return arrayOfWeekdays[dateDateTime.getDay()]
+}
+
+function handleClick(date){
+	enableDoubleClick = true
+  datePrecision = getPrecision(date)
 
 	switch (datePrecision) {
 		case "Month":
 			dataArray = nestedDataDays;
 			dateDateTime = new Date(date)
-			month = ("0" + (dateDateTime.getMonth() + 1)).slice(-2)
-			year = dateDateTime.getFullYear()
-			daysInMonth = new Date(year, month, 0).getDate()
-			startDate = "01/"+ month + "/" + year
-			endDate = daysInMonth + "/" + month  + "/" + year
+			daysInMonth = getDaysInMonth(date)
+			startDate = "01."+ month + "." + year
+			endDate = daysInMonth + "." + month  + "." + year
 			break;
 		case "Week":
 			dataArray = nestedDataDays;
 			week = date.slice(3,5)
 			year = date.slice(-4)
 			weekDays = getWeekDays(week, year)
-			startDate = weekDays[0]
-			endDate = weekDays[1]
+			startDate = parseDateDays(weekDays[0])
+			endDate = parseDateDays(weekDays[1])
 			break;
 		case "Day":
 			dataArray = nestedDataHours
-			startDate = date + " 00:00"
-			endDate = date + " 23:00"
+			startDate = date + ", 00:00"
+			endDate = date + ", 23:00"
 			break;
 		case "Hour":
 			dataArray = nestedDataMinutes
@@ -118,7 +140,53 @@ function handleClick(date){
 			alert("Zooming in further not possible.")
 
 	}
-	render(dataArray, startDate, endDate, date)
+	render(dataArray, startDate, endDate)
+}
+
+function getTitle(startDate, endDate){
+	datePrecision = getPrecision(startDate)
+	switch (datePrecision) {
+		case "Month":
+			startTitle = parseDateTitle(new Date(startDate))
+			endDateDateTime = new Date(endDate)
+			daysInMonth = getDaysInMonth(endDateDateTime)
+			endDateDateTime.setDate(endDateDateTime.getDate() + daysInMonth -1)
+			endDateDateTime.setHours(23); endDateDateTime.setMinutes(59);
+			endTitle = parseDateTitle(endDateDateTime);
+			break;
+	 	case "Week":
+			week1 = startDate.slice(3,5)
+			year1 = startDate.slice(-4)
+			weekDays1 = getWeekDays(week1, year1)
+			startTitle = parseDateTitle(weekDays1[0])
+			week2 = endDate.slice(3,5)
+			year2 = endDate.slice(-4)
+			weekDays2 = getWeekDays(week2, year2)
+			endDateDateTime = weekDays2[1]
+			endDateDateTime.setHours(23); endDateDateTime.setMinutes(59);
+			endTitle = parseDateTitle(endDateDateTime)
+			break;
+		case "Day":
+		  startTitle = parseDateTitle(parseEuropeanDate(startDate))
+			endDateDateTime = parseEuropeanDate(endDate);
+			endDateDateTime.setHours(23); endDateDateTime.setMinutes(59);
+			endTitle = parseDateTitle(endDateDateTime)
+			break;
+		case "Hour":
+			startWeekDay = getWeekDay(startDate)
+			endWeekDay = getWeekDay(endDate)
+			startTitle = startWeekDay + " " + startDate
+			endTitle = endWeekDay + " "+ endDate.replace(":00", ":59")
+			break;
+		case "Minute":
+			startWeekDay = getWeekDay(startDate)
+			endWeekDay = getWeekDay(endDate)
+			startTitle = startWeekDay + " " + startDate
+			endTitle = endWeekDay + " "+ endDate
+			break;
+
+	}
+			return [startTitle, endTitle]
 }
 
 /*
@@ -141,7 +209,7 @@ let svg = d3.select("#barChart")
 
 
 // the function render makes the plot and is called every time there by button click or brushing
-const render = (data, startDate, endDate, title) => {
+const render = (data, startDate, endDate) => {
 	// before every rendering everything is cleared from the svg
 	svg.selectAll('*').remove();
 
@@ -155,23 +223,11 @@ const render = (data, startDate, endDate, title) => {
 		originalData = dataArray.slice() //copies the array, so when user double clicks, this can be drawn
 	}
 	dataArray = cutArray(dataArray, startDate, endDate)
+	titleArray = getTitle(startDate, endDate)
+	titleParts = cutArray(possibleTitles, titleArray[0], titleArray[1])
+	startDateFull = titleParts[0].date
+	endDateFull = titleParts[titleParts.length -1].date
 
-	/*
-
-	Title Formatting
-
-	*/
-
-	svg.append("text")
-		.attr('class', 'chartTitle')
-		.style("font-family", "sans-serif")
-		.style("font-size", "2.3em")
-		.style("fill", "rgb(108, 105, 107)")
-		.style("font-weight", "bold")
-		.attr('y', svgHeight -625)
-		.attr('x', svgWidth/2 + 25)
-		.attr('text-anchor', 'middle')
-		.text(title);
 
 	/*
 
@@ -345,6 +401,7 @@ d3.csv(dataset).then(data =>{
       d.Days = parseDateDays(d.Time)
       d.Weeks = parseDateWeeks(d.Time)
       d.Months = parseDateMonths(d.Time)
+			d.Title = parseDateTitle(d.Time)
 
     });
 
@@ -354,7 +411,10 @@ d3.csv(dataset).then(data =>{
     nestedDataDays = d3.rollup(data, v => d3.sum(v,d => d.Steps), d => d.Days)
     nestedDataWeeks = d3.rollup(data, v => d3.sum(v,d => d.Steps), d => d.Weeks)
     nestedDataMonths = d3.rollup(data, v => d3.sum(v,d => d.Steps), d => d.Months)
+		nestedDateTitle =  d3.rollup(data, v => d3.sum(v,d => d.Steps), d => d.Title)
 
+		possibleTitles = Array.from(nestedDateTitle, ([date]) => ({ date}));
+		console.log(possibleTitles)
 
 
 		// Event Listening for the check box
@@ -370,32 +430,27 @@ d3.csv(dataset).then(data =>{
  	 })
 
 	  // default case: Months are rendered
-		var title = "Accumulated steps for every month"
-		render(nestedDataMonths, nestedDataMonths[0], nestedDataMonths[-1], title)
+		render(nestedDataMonths, nestedDataMonths[0], nestedDataMonths[-1])
+		console.log(startDateFull + " "+ endDateFull)
 
 
 		// event listeners for the buttons
     buttonHour_div.addEventListener("click", function(){
-				title = "Accumulated steps for every hour"
-        render(nestedDataHours, nestedDataHours[0], nestedDataHours[-1], title)
+        render(nestedDataHours, nestedDataHours[0], nestedDataHours[-1])
     })
 
     buttonDay_div.addEventListener("click", function(){
-				title = "Accumulated steps for every day"
-        render(nestedDataDays, nestedDataDays[0], nestedDataDays[-1], title)
+        render(nestedDataDays, nestedDataDays[0], nestedDataDays[-1])
 
     })
 
     buttonWeek_div.addEventListener("click", function(){
-			 	title = "Accumulated steps for every week"
-        render(nestedDataWeeks, nestedDataWeeks[0], nestedDataWeeks[-1], title)
+        render(nestedDataWeeks, nestedDataWeeks[0], nestedDataWeeks[-1])
     })
 
     buttonMonth_div.addEventListener("click", function(){
-			  title = "Accumulated steps for every month"
-        render(nestedDataMonths, nestedDataMonths[0], nestedDataMonths[-1], title)
+        render(nestedDataMonths, nestedDataMonths[0], nestedDataMonths[-1])
     })
-
 
 
   })

@@ -29,7 +29,7 @@ def Steps():
 
 @app.route('/Calories')
 def Calories():
-    return render_template('Calories.html')
+    return render_template('Calories.html', data="'static/data/biosensors_all_dates.csv'")
 
 @app.route('/Temperature')
 def Temperature():
