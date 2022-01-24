@@ -60,32 +60,33 @@ function boxplot(visparameter, divName, dotcolor, start = null, end = null) {
                 visCol.push(eval("d." + visparameter))
             }
         });
-
-        const maxVis = d3.max(data, function (d) {
-            return eval("d." + visparameter);
-        });
-        const minVis = d3.min(data, function (d) {
-            return eval("d." + visparameter);
-        });
         // --------------------------------------------------------------------------
         // Compute summary statistics used for the box:
-        var data_sorted = visCol.sort(d3.ascending)
-        var q1 = d3.quantile(data_sorted, .25)
-        var median = d3.quantile(data_sorted, .5)
-        var q3 = d3.quantile(data_sorted, .75)
-        var interQuantileRange = q3 - q1
-        var min = q1 - 1.5 * interQuantileRange
-        var max = q1 + 1.5 * interQuantileRange
+        let data_sorted = visCol.sort(d3.ascending).filter(function(value, index, arr){
+            return value != 0;
+        });
+        console.log(data_sorted)
+        let q1 = d3.quantile(data_sorted, .25)
+        console.log(q1)
+        let median = d3.quantile(data_sorted, .5)
+        let q3 = d3.quantile(data_sorted, .75)
+        console.log(q3)
+        let interQuantileRange = q3 - q1
+        console.log(interQuantileRange)
+        let min = q1 - 1.5 * interQuantileRange
+        console.log(min)
+        let max = q1 + 1.5 * interQuantileRange
+        console.log(max)
 
         // Show the Y scale
-        var y = d3.scaleLinear()
-            .domain([0, maxVis])
+        let y = d3.scaleLinear()
+            .domain([min - interQuantileRange/4, max + interQuantileRange/4])
             .range([height, 0]);
         svg.call(d3.axisLeft(y))
 
         // a few features for the box
-        var center = 75
-        var width = 75
+        let center = 75
+        let width = 75
 
         // Show the main vertical line
         svg
