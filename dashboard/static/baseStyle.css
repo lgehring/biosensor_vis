@@ -3,7 +3,7 @@
 /* variables*/
 :root {
     --menu_width: 240px;
-    --menu_color: #5c7ea8;
+    --menu_color: #4d5055;
     --font: Arial, Helvetica, sans-serif;
     --menu_font_color: rgb(255, 255, 255);
     --font_color: rgb(78, 75, 75);
@@ -11,7 +11,7 @@
     --Temp_color: #EB8015;
     --Step_color:#245d96; 
     --Cal_color: #00963c;
-    --Analysis_color: #3d536d;
+    --Analysis_color: #4f6a8b;
   }
 
 body{
@@ -102,6 +102,7 @@ i:hover{
     display: block;
     width: 100%;
     height: 13%;
+    border-collapse: collapse;
   }
    /*different styles per variable*/
   .menu a.HR{

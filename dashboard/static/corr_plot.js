@@ -8,7 +8,7 @@ const quadreColor = "#2E86C1";
 const polreColor = "#9B59B6";
     
 
-const margin = {top: 20, right: 30, bottom: 40, left: 100},
+const margin = {top: 20, right: 30, bottom: 80, left: 100},
 width = 800 - margin.left - margin.right,
 height = 360 - margin.top - margin.bottom;
 
@@ -183,7 +183,7 @@ function correlationPlot(divName, dotcolor){
                     .style("font-size", "14px")
                     .style("font-family", "Arial")
                     .attr("transform", "rotate(-90)")
-                    .attr("y", -margin.left/2.8)
+                    .attr("y", -margin.left/2.5)
                     .attr("x", -margin.top )
                     .text(var2 + toUnit(var2))
 
