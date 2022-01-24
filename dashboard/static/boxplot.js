@@ -5,16 +5,30 @@
 
 // Constructs a boxplot in the given div.
 // Enter name of visparameter as given in the CSV Header and dotcolor as a string.
-function boxplot(visparameter, divName, dotcolor) {
+function boxplot(visparameter, divName, dotcolor, start = null, end = null) {
     const margin = {top: 10, right: 30, bottom: 30, left: 60}, width = 200 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
 
-    const svg = d3.select(divName)
+    const svg = d3.select('#' + divName)
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    // A function to round dates to the nearest x minutes
+    let getRoundedDate = (minutes, d = new Date()) => {
+        let ms = 1000 * 60 * minutes; // convert minutes to ms
+        let roundedDate = new Date(Math.round(d.getTime() / ms) * ms);
+        return roundedDate
+    }
+
+    // Round start/end if available
+    if (start != null && end != null) {
+        // round to nearest minute
+        start = getRoundedDate(1, start)
+        end = getRoundedDate(1, end)
+    }
 
     // Read data
     d3.csv(dataset).then(function (data) {
@@ -36,8 +50,15 @@ function boxplot(visparameter, divName, dotcolor) {
             d.Temperature = toNumber(d.Temperature);
             d.Steps = toNumber(d.Steps);
 
-            // Build visparameter column array
-            visCol.push(eval("d." + visparameter))
+            if (start != null && end != null) {
+                if (start.valueOf() <= d.Time.valueOf() && d.Time.valueOf()<= end.valueOf()) {
+                    // only add data, when in timeframe
+                    visCol.push(eval("d." + visparameter))
+                }
+            } else {
+                // No start/end defined, include all values
+                visCol.push(eval("d." + visparameter))
+            }
         });
 
         const maxVis = d3.max(data, function (d) {
@@ -46,7 +67,6 @@ function boxplot(visparameter, divName, dotcolor) {
         const minVis = d3.min(data, function (d) {
             return eval("d." + visparameter);
         });
-
         // --------------------------------------------------------------------------
         // Compute summary statistics used for the box:
         var data_sorted = visCol.sort(d3.ascending)
