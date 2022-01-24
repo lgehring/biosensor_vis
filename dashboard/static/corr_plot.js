@@ -7,8 +7,10 @@ const linregrColor = "#17A589";
 const quadreColor = "#2E86C1";
 const polreColor = "#9B59B6";
     
-const margin = {top: 10, right: 30, bottom: 40, left: 60}, width = 1200 - margin.left - margin.right,
-    height = 600 - margin.top - margin.bottom;
+
+const margin = {top: 20, right: 30, bottom: 40, left: 100},
+width = 800 - margin.left - margin.right,
+height = 360 - margin.top - margin.bottom;
 
 // Function to create the correlation plotz
 function correlationPlot(divName, dotcolor){
@@ -38,6 +40,7 @@ function correlationPlot(divName, dotcolor){
           } else {
             // Delete old svg content
             svg.selectAll("*").remove();
+            d3.selectAll("path").remove()
 
             // Read data
             d3.csv(dataset).then(function (data) {
@@ -162,7 +165,8 @@ function correlationPlot(divName, dotcolor){
                 svg.append("text")
                     .attr("text-anchor", "end")
                     .attr("x", width/2 + margin.left)
-                    .attr("y", height + margin.top + 20)
+                    .attr("y", height + margin.top + 10)
+                    .style("font-size", "14px")
                     .style("font-family", "Arial")
                     .text(var1 + toUnit(var1));
 
@@ -176,10 +180,11 @@ function correlationPlot(divName, dotcolor){
                  // Add Y-axis label
                 svg.append("text")
                     .attr("text-anchor", "end")
+                    .style("font-size", "14px")
                     .style("font-family", "Arial")
                     .attr("transform", "rotate(-90)")
-                    .attr("y", -margin.left + 20)
-                    .attr("x", -margin.top - height/2 + 20)
+                    .attr("y", -margin.left/2.8)
+                    .attr("x", -margin.top )
                     .text(var2 + toUnit(var2))
 
                 // Add dots in scatter plot
@@ -199,30 +204,29 @@ function correlationPlot(divName, dotcolor){
                 // ---------------------- Calculate Regressions -------------------------
                 // source: https://github.com/harrystevens/d3-regression
 
-                // check if Regression checkboxes were clicked
-                let linRegrCheck = document.getElementById("linCheck");
-                let quadRegrCheck = document.getElementById("quadCheck");
-                let polRegrCheck = document.getElementById("polCheck");
-
                 // Linear regression 
                 const reglin = d3.regressionLinear()
                     .x(d => eval("d." + var1))
                     .y(d => eval("d." + var2));
-                regression = reglin(newdata);
+                const regression = reglin(newdata);
 
                 // Quadratic Regression
                 const regquad = d3.regressionQuad()
                     .x(d => eval("d." + var1))
                     .y(d => eval("d." + var2));
-                quadregression = regquad(newdata);
+                const quadregression = regquad(newdata);
 
                 // Polynomail Regression (order = 3)
                 const regpol = d3.regressionPoly()
                     .x(d => eval("d." + var1))
                     .y(d => eval("d." + var2))
                     .order(3);
-                let polregression = regpol(newdata);
-                console.log(polregression)
+                const polregression = regpol(newdata);
+
+                // check if Regression checkboxes were clicked
+                let linRegrCheck = document.getElementById("linCheck");
+                let quadRegrCheck = document.getElementById("quadCheck");
+                let polRegrCheck = document.getElementById("polCheck");
                 
                 // Function formatting regression data to plot them
                 function regrNewformat(regrdata){
@@ -253,41 +257,44 @@ function correlationPlot(divName, dotcolor){
                 // Append linear regression if checkbox checked
                 linRegrCheck.addEventListener("change", () => {
                     let linregr = document.getElementById("linregr");
+                    let svgID = "lin" + var1 + var2;
                     if (linRegrCheck.checked) {
                         // inform about values
                         linregr.innerHTML = "Linear regression: y = " +  roundto2dig(regression.a) + " * x + " + 
                         roundto2dig(regression.b) + " | R<sup>2</sup> = "+   roundto2dig(regression.rSquared);
                         linregr.style.color = linregrColor;
                         // add to plot
-                        plotRegr(regression, linregrColor, "lin")
+                        plotRegr(regression, linregrColor, svgID)
                     } else {
                         linregr.innerHTML = "";
-                        d3.select("#lin").remove();
+                        svg.select("#"+ svgID).remove();
                     }
                 })
 
                 // Append quadratic regression if checkbox checked
                 quadRegrCheck.addEventListener("change", () => {
                     let quadregr = document.getElementById("quadregr");
+                    let svgID = "quad" + var1 + var2;
                     if (quadRegrCheck.checked) {
                         // inform about values
                         quadregr.innerHTML = "Quadratic regression: y = " + roundto2dig(quadregression.a) + " * x<sup>2</sup> + " + 
                         roundto2dig(quadregression.b) +"* x + "+  roundto2dig(quadregression.c) + " | R<sup>2</sup> = " +  roundto2dig(quadregression.rSquared);
                         quadregr.style.color = quadreColor;
                         // add to plot
-                        plotRegr(quadregression, quadreColor, "quad")
+                        plotRegr(quadregression, quadreColor, svgID)
                     } else {
                         quadregr.innerHTML = "";
-                        d3.select("#quad").remove();
+                        svg.select("#"+svgID).remove();
                     }
                 })
 
                 // Append polynomial regression if checkbox checked
                 polRegrCheck.addEventListener("change", () => {
                     let polregr = document.getElementById("polregr");
+                    let svgID = "pol" + var1 + var2;
                     if (polRegrCheck.checked) {
                         // add to plot
-                        plotRegr(polregression, polreColor, "pol")
+                        plotRegr(polregression, polreColor, svgID)
                         // inform about values
                         polregr.innerHTML = "Polynomail regression (order = 3): y = " + roundto2dig(polregression.coefficients[3]) + " * x<sup>3</sup> + " + 
                         roundto2dig(polregression.coefficients[2])  + " * x<sup>2</sup> + " + 
@@ -296,7 +303,7 @@ function correlationPlot(divName, dotcolor){
                         polregr.style.color = polreColor;
                     } else {
                         polregr.innerHTML = "";
-                        d3.select("#pol").remove();
+                        svg.select("#" + svgID).remove();
                     }
                 })
 

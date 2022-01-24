@@ -1,13 +1,17 @@
 /* @author: Marit Bockstedte*/
 
-
 /* variables*/
 :root {
     --menu_width: 240px;
-    --menu_color: #2E8B57;
+    --menu_color: #5c7ea8;
     --font: Arial, Helvetica, sans-serif;
     --menu_font_color: rgb(255, 255, 255);
     --font_color: rgb(78, 75, 75);
+    --HR_color: #e0432f; 
+    --Temp_color: #EB8015;
+    --Step_color:#245d96; 
+    --Cal_color: #00963c;
+    --Analysis_color: #3d536d;
   }
 
 body{
@@ -19,17 +23,33 @@ p{
   color: var(--font_color);
   font-size: 15px;
 }
-
+/*style fonts */
 h1{
     font-family: var(--font);
     color: var(--menu_color);
     font-size: 30px;
     font-weight: bold;
 }
+/*style h11 per website */
+h1.Analysis{
+  color: var(--Analysis_color)
+}
+h1.HR{
+  color: var(--HR_color)
+}
+h1.Temp{
+  color: var(--Temp_color)
+}
+h1.Cal{
+  color: var(--Cal_color)
+}
+h1.Step{
+  color: var(--Step_color)
+}
 h2{
     font-family: var(--font);
     color: var(--font_color);
-    padding: 0px 0px 5px 20px;
+    padding: 0px 0px 5px 10px;
     font-size: 20px;
     display: block;
 }
@@ -41,15 +61,29 @@ a{
     font-weight: bold;
     text-decoration: none;
 }
+label{
+  font-family: var(--font);
+  color: var(--font_color);
+  font-size: 15px;
+
+}
 a:hover {
     color: var(--menu_color);
   }
+  
+/*style icons */
+i{
+  align-items: right;
+}
+i:hover{
+  color: var(--menu_color);
+}
 
 /* menu*/
 .menu {
     height: 100%;           
     width: var(--menu_width); 
-    position: fixed;                
+    position: fixed;    
     z-index: 1;
     top: 0; 
     left: 0;
@@ -58,38 +92,148 @@ a:hover {
   
   /*menu links*/
   .menu a {
-    padding: 8px 8px 8px 35px;
+    padding: 8px 0px 0px 0px;
+    margin: auto;
     font-family: var(--font);
     text-decoration: none;
     font-size: 25px;
+    text-align: center;
     color: var(--menu_font_color);
     display: block;
+    width: 100%;
+    height: 13%;
+  }
+   /*different styles per variable*/
+  .menu a.HR{
+    background-color: var(--HR_color);
+  }
+  .menu a.HR:hover{
+    background-color: var(--menu_font_color);
+    color: var(--HR_color);
+  }
+  .menu a.Temp{
+    background-color: var(--Temp_color);
+  }
+  .menu a.Temp:hover{
+    background-color: var(--menu_font_color);
+    color: var(--Temp_color);
+  }
+  .menu a.Cal{
+    background-color: var(--Cal_color);
+  }
+  .menu a.Cal:hover{
+    background-color: var(--menu_font_color);
+    color: var(--Cal_color);
+  }
+  .menu a.Step{
+    background-color: var(--Step_color);
+  }
+  .menu a.Step:hover{
+    background-color: var(--menu_font_color);
+    color: var(--Step_color);
+  }
+  .menu a.Analysis{
+    background-color: var(--Analysis_color);
+  }
+  .menu a.Analysis:hover{
+    background-color: var(--menu_font_color);
+    color: var(--Analysis_color);
+  }
+/*design menu logos*/
+  .menu i{
+    padding: 0px 0px 8px 0px;
+    display: inline-block;
+    font-size: 1.8rem;
   }
 
   .menu a:hover {
-    color: #9c9eb6;
-  }
+    color: var(--menu_color);
+    background-color: var(--menu_font_color);
 
-  .menu a.active {
-    background-color: #9c9eb6;
-    color: white;
   }
 
   /*menu logo*/
   .menu h {
     font-weight: bold;
-    padding: 6px 8px 40px 16px;
+    padding: 6px 8px 15px 16px;
     text-decoration: none;
-    font-size: 35px;
+    font-size: 29px;
     color: var(--menu_font_color);
     display: block;
     font-family: var(--font)
   }
-
+  .menu h i{
+    font-size: 2rem;
+  }
+  .menu h i:hover{
+    color: var(--menu_font_color);
+  }
   /*styling for chordgraph*/
   .cg-titles, .cg-tick-labels {
     font-family: var(--font);
   }
 
-  
+/* menu on top*/
+.footer {
+  position: absolute;
+  left: var(--menu_width);
+  top: 0;
+  height: 20px;
+  width: 100%;
+  background-color: var(--font_color);
+  color: white;
+  text-align: left;
+}
+/* menu botton links*/
+.footer a {
+  padding: 35px 35px 25px 25px;
+  font-weight: lighter;
+  font-family: var(--font);
+  text-decoration: none;
+  font-size: 15px;
+  color: var(--menu_font_color);
+}
+.footer a:hover {
+  color: var(--font_color);
+  background-color: var(--menu_font_color);
+}
+
+/* extandable parts of websites */
+/* source: https://www.w3schools.com/howto/howto_js_collapsible.asp*/
+
+.collapsible {
+  background-color: var(--menu_font_color);
+  color: var(--font_color);
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+}
+.collapsible i:hover{
+  color: var(--menu_font_color);
+}
+
+.active, .collapsible:hover {
+  background-color: rgb(163, 157, 157);
+}
+
+.collapsible:after {
+  content: '\002B';
+  color: var(--font_color);
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\2212";
+}
+
+.content {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
   

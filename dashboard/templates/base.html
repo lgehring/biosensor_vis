@@ -10,36 +10,35 @@
     <link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='dataAnalysis.css') }}" >
     <script src="https://d3js.org/d3.v7.min.js" charset="utf-8"></script>
     <title>Biosensor Data Visualization</title>
+    <script src="https://kit.fontawesome.com/373611f8dc.js" crossorigin="anonymous"></script>
 </head>
 <body>
+    <!-- Top bar menu -->
+    <div class="footer">
+        <a href="{{ url_for('base') }}"><i class="fas fa-home"> </i> Home</a>
+        <a href="{{ url_for('About') }}"><i class="fas fa-info"></i> About</a>
+    </div>
+    <!-- Sidebar menu -->
     <div class="menu">
-        <h>BIOSENSOR</h> <!-- Website Logo -->
-        <a href="{{ url_for('Heartrate') }}">Heartrate</a>
-        <a href="{{ url_for('Steps') }}">Steps</a>
-        <a href="{{ url_for('Calories') }}">Calories</a>
-        <a href="{{ url_for('Temperature') }}">Temperature</a>
-        <a href="{{ url_for('Data_Analysis') }}">Data Analysis</a>
-        <a></a>
-        <a></a>
-        <a></a>
-        <a href="{{ url_for('base') }}">Home</a>
-        <a href="{{ url_for('About') }}">About</a>
+        <h>BIOSENSOR <i class="fas fa-chart-bar"></i></h> <!-- Website Logo -->
+        <a class= "HR" href="{{ url_for('Heartrate') }}"><i class="fas fa-heartbeat fa-fw"></i> <br>Heartrate</a><br>
+        <a class= "Step" href="{{ url_for('Steps') }}"><i class="fas fa-shoe-prints fa-fw"></i><br> Steps</a><br>
+        <a class= "Cal" href="{{ url_for('Calories') }}"><i class="fas fa-fire fa-fw"></i><br> Calories</a><br>
+        <a class= "Temp" href="{{ url_for('Temperature') }}"><i class="fas fa-thermometer-half fa-fw"></i><br> Temperature</a><br>
+        <a class= "Analysis" href="{{ url_for('Data_Analysis') }}"><i class="fas fa-search fa-fw"></i><br>Data Analysis</a><br>
     </div>
     <div id="info"><!-- Change for the sub-website -->
         <h1>Analyze your biosensor data using this visualization tool</h1>
-        <a href="{{ url_for('Heartrate') }}">Heartrate</a>
-        <h2>Display your Heartrate data</h2>
-        <a href="{{ url_for('Steps') }}">Steps</a>
-        <h2>Display your Steps data</h2>
-        <a href="{{ url_for('Calories') }}">Calories</a>
-        <h2>Display your Calories data</h2>
-        <a href="{{ url_for('Temperature') }}">Temperature</a>
-        <h2>Display your Temperature data</h2>
-        <a href="{{ url_for('Data_Analysis') }}">Data Analysis</a>
-        <h2>Analyze the correlation between your data and your patterns</h2>
-        <a href="{{ url_for('About') }}">About</a>
-        <h2>Get information about this website</h2>
+        <a href="{{ url_for('Heartrate') }}" ><i class="fas fa-heartbeat fa-fw"></i> Heartrate </a><i class="fas fa-info-circle" title="Display your Heartrate data "></i><br>
+        <a href="{{ url_for('Steps') }}"><i class="fas fa-shoe-prints fa-fw"></i> Steps </a><i class="fas fa-info-circle" title="Display your Steps data"></i><br>
+        <a href="{{ url_for('Calories') }}"><i class="fas fa-fire fa-fw"></i> Calories </a><i class="fas fa-info-circle" title="Display your Calories data"></i><br>
+        <a href="{{ url_for('Temperature') }}"><i class="fas fa-thermometer-half fa-fw"></i> Temperature </a><i class="fas fa-info-circle" title="Display your Temperature data"></i><br>
+        <a href="{{ url_for('Data_Analysis') }}"><i class="fas fa-search fa-fw"></i> Data Analysis </a><i class="fas fa-info-circle" title="Analyze the correlation between your data and your patterns"></i><br>
+        <a href="{{ url_for('About') }}"><i class="fas fa-info fa-fw"></i> About </a><i class="fas fa-info-circle" title="Get information about this website"></i><br>
     </div>
+
+    <!-- Add extandable content -->
+    <!-- source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible_animate -->
 
     {% block content %}
     {% endblock %}

@@ -4,12 +4,17 @@
 /*** Inspired by: https://www.d3-graph-gallery.com/graph/line_brushZoom.html 
                   https://www.d3-graph-gallery.com/graph/line_cursor.html ***/
 
+
 function lineplot(visparameter, divName, color, titleID) {
 
-// set svg dimensions and margins
-const svgWidth = 800 ;
-const svgHeight = 360;
-const margin = {top: 20, right: 30, bottom: 40, left: 50};
+// units
+const unitHR = " [BPM]"
+const unitTemp = " [F]"
+
+// set svg dimensions and margins - changed by Marit
+const margin = {top: 20, right: 30, bottom: 40, left: 100};
+const svgWidth = 800  - margin.left - margin.right;
+const svgHeight = 360 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
 let svg = d3.select(divName)
@@ -37,8 +42,8 @@ var rowConverter = function(d) {
 
 //load the data
 d3.csv(dataset, rowConverter).then(function(data) {
-  console.log(data); 
-  console.log(data[d3.maxIndex(data, d => d.Steps)])
+  //console.log(data); 
+  //console.log(data[d3.maxIndex(data, d => d.Steps)])
   
   // Add X axis 
   var xScale = d3.scaleTime()
@@ -152,23 +157,36 @@ d3.csv(dataset, rowConverter).then(function(data) {
   // Set title
   document.getElementById(titleID).innerHTML = dateFormat(xScale.domain()[0].getTime()) + ' to ' + dateFormat(xScale.domain()[1].getTime())
 
-  // adds x-axis label 
+  // get unit -- implemented by Marit
+  function unit(param){
+    unit = "";
+    if(param == "HR"){
+      unit = unitHR;
+    } else if (param == "Temperature"){
+      unit = unitTemp;
+    }
+    return unit;
+  }
+
+  // adds x-axis label - changed by Marit
   svg.append("text")
-    .attr("class", "xLabel")
     .attr("text-anchor", "end")
-    .attr("x", svgWidth)
-    .attr("y", svgHeight + margin.bottom)
+    .attr("x", svgWidth/2 + margin.left)
+    .attr("y", svgHeight + margin.top + 10)
+    .style("font-size", "14px")
+    .style("font-family", "Arial")
     .text("Time");
 
-  // adds x-axis label 
-    svg.append("text")
-    .attr("class", "yLabel")
+
+  // adds y-axis label - changed by Marit
+  svg.append("text")
     .attr("text-anchor", "end")
-    .attr("y", -margin.left)
-    .attr("x", 0)
-    .attr("dy", "1em")
+    .style("font-size", "14px")
+    .style("font-family", "Arial")
     .attr("transform", "rotate(-90)")
-    .text(visparameter);
+    .attr("y", -margin.left/2.8)
+    .attr("x", -margin.top )
+    .text(visparameter+ unit(visparameter));
   
 
   // Add the brushing
