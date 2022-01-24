@@ -66,10 +66,6 @@
   fill: rgb(108, 105, 107);
   font-family: sans-serif;
 }
-.axisLabel:hover{
-  cursor: pointer;
-  text-decoration: underline;
-}
 
 .bars{
   fill: var(--Cal_color);
