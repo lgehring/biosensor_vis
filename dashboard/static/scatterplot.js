@@ -21,10 +21,8 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
 
     // A function to round dates to the nearest x minutes
     let getRoundedDate = (minutes, d = new Date()) => {
-
         let ms = 1000 * 60 * minutes; // convert minutes to ms
         let roundedDate = new Date(Math.round(d.getTime() / ms) * ms);
-
         return roundedDate
     }
 
@@ -67,7 +65,7 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
         let maxTimeTemp = maxTime
 
         // Choose first axis limits as given
-        if (start != null && end != null && start > minTime && end < maxTime) {
+        if (start != null && end != null && start >= minTime && end <= maxTime) {
             // round to nearest minute
             start = getRoundedDate(1, start)
             end = getRoundedDate(1, end)
