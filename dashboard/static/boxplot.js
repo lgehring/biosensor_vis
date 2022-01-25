@@ -6,8 +6,10 @@
 // Constructs a boxplot in the given div.
 // Enter name of visparameter as given in the CSV Header and dotcolor as a string.
 function boxplot(visparameter, divName, dotcolor, start = null, end = null) {
-    const margin = {top: 10, right: 30, bottom: 30, left: 60}, width = 200 - margin.left - margin.right,
-        height = 600 - margin.top - margin.bottom;
+    
+const margin = {top: 20, right: 30, bottom: 80, left: 100},
+width = 800 - margin.left - margin.right,
+height = 360 - margin.top - margin.bottom;
 
     const svg = d3.select('#' + divName)
         .append("svg")
@@ -78,12 +80,6 @@ function boxplot(visparameter, divName, dotcolor, start = null, end = null) {
         let max = q1 + 1.5 * interQuantileRange
         //console.log(max)
 
-        // Show the Y scale
-        let y = d3.scaleLinear()
-            .domain([min - interQuantileRange/4, max + interQuantileRange/4])
-            .range([height, 0]);
-        svg.call(d3.axisLeft(y))
-        
         // adds y-axis label - changed by Marit
         // units
         const unitHR = " [BPM]";
@@ -106,14 +102,24 @@ function boxplot(visparameter, divName, dotcolor, start = null, end = null) {
             return unit;
         }
 
-        svg.append("text")
+        // Show the Y scale
+        let y = d3.scaleLinear()
+            .domain([min - interQuantileRange/4, max + interQuantileRange/4])
+            .range([height, 0]);
+        svg.append("g")
+            .call(d3.axisLeft(y))
+        .append("text")
             .attr("text-anchor", "end")
             .style("font-size", "14px")
             .style("font-family", "Arial")
+            .style('fill', 'black')
             .attr("transform", "rotate(-90)")
             .attr("y", -margin.left/2.8)
             .attr("x", -margin.top )
             .text(visparameter + unit(visparameter));
+        
+        
+
 
         // a few features for the box
         let center = 75
