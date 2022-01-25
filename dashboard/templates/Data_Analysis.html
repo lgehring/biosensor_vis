@@ -11,6 +11,8 @@
 <!--Import statistics package-->
 <script src="{{ url_for('static', filename='statistics.js') }}"></script>
 <script src="{{ url_for('static', filename='d3-regression.js') }}"></script>
+<script src="{{ url_for('static', filename='bubbleChart.js') }}"></script>
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='bubbleChartStyles.css') }}" >
 <script src="https://d3js.org/d3.v7.min.js"></script>
 
 <!--Import scripts-->
@@ -18,11 +20,18 @@
 <script src="{{ url_for('static', filename='corr_plot.js') }}"></script>
 
 <!--Load functions onload-->
-<body onload="chordgraph('#chordgraph');correlationPlot('#corrPlot', 'blue', 250) ">
+<body onload="chordgraph('#chordgraph');correlationPlot('#corrPlot', 'blue', 250);bubbleChart('#bubbleChart')">
 
 <!--Run Bubble chart visualization -->
 <h2 class="collapsible">Bubble Chart <i class="fas fa-info-circle" title="Bubble chart"></i></h2>
 <div class="content">
+  <select id="combo">
+    <option value="Steps">Steps</option>
+    <option value="HR">Heartrate</option>
+    <option value="Calories">Calories</option>
+    <option value="Temperature">Temperature</option>
+  </select>
+  <div id="bubbleChart"></div>
 </div>
 
 <!--Run chordgraph visualization -->
