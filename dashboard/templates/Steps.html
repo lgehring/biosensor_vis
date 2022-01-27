@@ -1,34 +1,51 @@
 {% extends "base.html" %}
 {% block content %}
-
-<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='barChartStyles.css') }}" >
-<div id = "Buttons">
-<div id = "ButtonMonth" class="Button">
-  Months
-</div>
-<div id = "ButtonWeek" class="Button">
-  Weeks
-</div>
-<div id = "ButtonDay" class="Button">
-  Days
-  </div>
-<div id = "ButtonHour" class="Button">
-  Hours
-  </div>
-</div>
-<div id="barChart"></div>
-<span class = "stat" id = "statText"> To annotate statistics, check the below!
-  </span>
-<div class = "stat">
-  <input type="checkbox" id="stat" name="stat">
-  <label for="Maximum">Enable annotations.</label>
-</div>
 <script type="text/javascript" >
-      document.getElementById("info").innerHTML = "<h1>Steps Data</h1>";
+      document.getElementById("info").innerHTML = "<h1 class=Step>Steps Data</h1>";
       dataset = {{ data | safe }};
 </script>
-
+<!--Import scripts-->
 <script src="{{ url_for('static', filename='barChart.js') }}"></script>
-<body onload="barChart('Steps', '#barChart')">
+<script src="{{ url_for('static', filename='boxplot.js') }}"></script>
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='barChartStyles_Steps.css') }}" >
+<!--Load functions onload-->
+<body onload="barChart('Steps', '#barChart'); boxplot('Steps', 'boxplot', '#245d96')">
+  
 
+<!--Run barchart visualization-->
+<h2 class="collapsible">Barchart <i class="fas fa-info-circle" title="show barchart of steps data"></i></h2>
+<div class="content">
+  <h2 id = "title"></h2>
+  <div id = "Buttons" >
+  <div id = "ButtonMonth" class="Button" >
+    Months
+  </div>
+  <div id = "ButtonWeek" class="Button">
+    Weeks
+  </div>
+  <div id = "ButtonDay" class="Button">
+    Days
+    </div>
+  <div id = "ButtonHour" class="Button">
+    Hours
+    </div>
+  </div>
+  <div id="barChart"></div>
+  <span class = "stat" id = "statText"> To annotate statistics, check the below!
+    </span>
+  <div class = "stat">
+    <input type="checkbox" id="stat" name="stat">
+    <label for="Maximum">Enable annotations.</label>
+  </div>
+</div>
+
+<!--Run boxplot visualization -->
+<h2 class="collapsible">Boxplot <i class="fas fa-info-circle" title="show boxplot of steps data"></i></h2>
+<div class="content">
+  <div id="boxplot"></div>
+</div>
+
+<!-- Add extandable content -->
+<!-- source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible_animate -->
+<script src="{{ url_for('static', filename='extandable.js') }}"></script>
 {% endblock %}

@@ -9,8 +9,13 @@
 // Enter name of visparameter as given in the CSV Header and dotcolor as a string.
 // Optionally takes a start and end date for initial zoom window as datetime objects.
 function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start = null, end = null) {
-    const margin = {top: 10, right: 30, bottom: 30, left: 60}, width = 1200 - margin.left - margin.right,
-        height = 600 - margin.top - margin.bottom;
+    // units
+    const unitHR = " [BPM]"
+    const unitTemp = " [F]"
+
+    const margin = {top: 20, right: 30, bottom: 40, left: 100},
+        width = 800 - margin.left - margin.right,
+        height = 360 - margin.top - margin.bottom;
 
     const svg = d3.select('#' + divName)
         .append("svg")
@@ -81,12 +86,6 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
         let xAxis = svg.append("g")
             .attr("transform", `translate(0, ${height})`)
             .call(d3.axisBottom(x));
-        svg.append("text")
-            .attr("class", "x label")
-            .attr("text-anchor", "end")
-            .attr("x", width - 10)
-            .attr("y", height - 10)
-            .text("Time");
 
         // Add Y axis
         const y = d3.scaleLinear()
@@ -94,14 +93,37 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
             .range([height, 0]);
         let yAxis = svg.append("g")
             .call(d3.axisLeft(y));
+
+        // get unit -- implemented by Marit
+        function unit(param){
+            unit = "";
+            if(param == "HR"){
+            unit = unitHR;
+            } else if (param == "Temperature"){
+            unit = unitTemp;
+            }
+            return unit;
+        }
+
+        // adds x-axis label - changed by Marit
         svg.append("text")
-            .attr("class", "y label")
             .attr("text-anchor", "end")
-            .attr("y", 5)
-            .attr("x", -5)
-            .attr("dy", "1em")
+            .attr("x", width/2 + margin.left)
+            .attr("y", height + margin.top + 10)
+            .style("font-size", "14px")
+            .style("font-family", "Arial")
+            .text("Time");
+
+
+        // adds y-axis label - changed by Marit
+        svg.append("text")
+            .attr("text-anchor", "end")
+            .style("font-size", "14px")
+            .style("font-family", "Arial")
             .attr("transform", "rotate(-90)")
-            .text(visparameter);
+            .attr("y", -margin.left/2.8)
+            .attr("x", -margin.top )
+            .text(visparameter+ unit(visparameter));
 
         // Add a clipPath: everything out of this area won't be drawn.
         var clip = svg.append("defs").append("svg:clipPath")

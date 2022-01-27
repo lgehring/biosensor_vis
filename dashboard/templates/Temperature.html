@@ -1,16 +1,45 @@
 {% extends "base.html" %}
 {% block content %}
-<div id="tempDiv"></div>
 
 <script>
-    document.getElementById("info").innerHTML = "<h1>Temperature Data</h1>";
+    document.getElementById("info").innerHTML = "<h1 class=Temp>Temperature Data</h1>";
     dataset = {{ data | safe }};
 </script>
-
-<!--Run lineplot visualization-->
-<!--
+<!--Import scripts-->
 <script src="{{ url_for('static', filename='lineplot.js') }}"></script>
-<body onload="lineplot('Temperature', '#tempDiv', 'pink')">
--->
+<script src="{{ url_for('static', filename='scatterplot.js') }}"></script>
+<script src="{{ url_for('static', filename='boxplot.js') }}"></script>
 
+<!--Load functions onload-->
+<body onload="lineplot('Temperature', '#tempDiv', '#EB8015', 'tempTitle'); 
+scatterplot('Temperature', 'tempDiv2', 'tempTitle2', '#EB8015', document.getElementById('sampleSize').value); 
+boxplot('Temperature', 'boxplot', '#EB8015')" >
+
+    
+<!--Run lineplot visualization-->
+<h2 class="collapsible">Lineplot <i class="fas fa-info-circle" title="show lineplot of heartrate data"></i></h2>
+<div class="content">
+    <h2 id="tempTitle"></h2>
+    <div id="tempDiv"></div>
+</div>
+
+<!--Run scatterplot visualization -->
+<h2 class="collapsible">Scatterplot <i class="fas fa-info-circle" title="show scatterplot of temperature data"></i></h2>
+<div class="content">
+    <h2 id="tempTitle2"></h2>
+    <label id="range">Enter number of dots to sample (500-10,000):</label>
+    <input type="number" id="sampleSize" name="sampleSize" min="500" max="10000" value="500">
+    <input type="submit" id="submit" value="Plot">
+    <div id="tempDiv2"></div>
+</div>
+
+<!--Run boxplot visualization -->
+<h2 class="collapsible">Boxplot <i class="fas fa-info-circle" title="show boxplot of temperature data"></i></h2>
+<div class="content">
+    <div id="boxplot"></div>
+</div>
+
+<!-- Add extandable content -->
+<!-- source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible_animate -->
+<script src="{{ url_for('static', filename='extandable.js') }}"></script>
 {% endblock %}
