@@ -8,26 +8,26 @@
 </script>
 <!--Import scripts-->
 <script src="{{ url_for('static', filename='barChart.js') }}"></script>
-<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='barChartStyles_Cal.css') }}" >
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='barChartStyles.css') }}" >
 <script src="{{ url_for('static', filename='boxplot.js') }}"></script>
 <!--Load functions onload-->
-<body onload="barChart('Calories', '#barChart'); boxplot('Calories', 'boxplot', '#00963c')">
+<body onload="barChart('Calories', '#barChart', '#00963c'); boxplot('Calories', 'boxplot', '#00963c')">
 
 <!--Run barchart visualization-->
 <h2 class="collapsible">Barchart <i class="fas fa-info-circle" title="show barchart of calories data"></i></h2>
 <div class="content">
   <h2 id = "title"></h2>
-  <div id = "Buttons" >
-    <div id = "ButtonMonth" class="Button" >
+  <div id = "Buttons" style = "color: #00963c;">
+    <div id = "ButtonMonth" class="Button" style = "border-color: #00963c;">
       Months
     </div>
-    <div id = "ButtonWeek" class="Button">
+    <div id = "ButtonWeek" class="Button" style = "border-color: #00963c;">
       Weeks
     </div>
-    <div id = "ButtonDay" class="Button">
+    <div id = "ButtonDay" class="Button" style = "border-color: #00963c;">
       Days
       </div>
-    <div id = "ButtonHour" class="Button">
+    <div id = "ButtonHour" class="Button" style = "border-color: #00963c;">
       Hours
       </div>
     </div>
@@ -45,7 +45,7 @@
   <div class="content">
     <div id="boxplot"></div>
   </div>
-  
+
   <!-- Add extandable content -->
   <!-- source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible_animate -->
   <script src="{{ url_for('static', filename='extandable.js') }}"></script>

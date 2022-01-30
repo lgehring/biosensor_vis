@@ -1,5 +1,5 @@
-function barChart(param, div){
-	console.log("last check");
+function barChart(param, div, color){
+	console.log("colors colors on the wall");
 	// elements from html file (buttons and checkbox)
 	const buttonMonth_div = document.getElementById("ButtonMonth");
 	const buttonWeek_div = document.getElementById("ButtonWeek");
@@ -333,6 +333,7 @@ function barChart(param, div){
 				.attr("y", d => yScale(d.value))
 				.attr("height", d => svgHeight - yScale(d.value))
 				.attr("width", xScale.bandwidth())
+				.style("fill", color)
 				.on("click", (i, d) => handleClick(d.date))
 				.append("title")
 					.text(d => "Date " + d.date + "\n" + param + ": " + d.value)
