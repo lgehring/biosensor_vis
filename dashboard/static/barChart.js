@@ -202,13 +202,11 @@ function barChart(param, div){
 	}
 
 	/*
-
 	 set svg dimensions and margins
-
 	*/
-	const svgWidth = 1200;
-	const svgHeight = 600;
-	const margin = {top: 60, right: 0, bottom: 60, left: 100}
+	const margin = {top: 20, right: 30, bottom: 40, left: 100};
+	const svgWidth = 800  - margin.left - margin.right;
+	const svgHeight = 360 - margin.top - margin.bottom;
 
 	// append the svg object to the body of the page
 	let svg = d3.select(div)
@@ -240,14 +238,12 @@ function barChart(param, div){
 		startDateFull = titleParts[0].date
 		endDateFull = titleParts[titleParts.length -1].date
 
-		document.getElementById("info").innerHTML =
-		"<h1>" + startDateFull + " - " + endDateFull + "</h1>";
+		document.getElementById("title").innerHTML =
+		"<h2>" + startDateFull + " - " + endDateFull + "</h2>";
 
 
 		/*
-
 		X Scale
-
 		*/
 
 	  xScale = d3.scaleBand()
@@ -258,9 +254,7 @@ function barChart(param, div){
 	  const ticks = getTickArray(dataArray)
 
 		/*
-
 		X axis formatting
-
 		*/
 
 	  const xAxis = d3.axisBottom(xScale)
@@ -270,18 +264,18 @@ function barChart(param, div){
 	    .attr("transform", `translate(0, ${svgHeight})`)
 	    .call(xAxis)
 
-	  xAxisOffset = 55
-	  svg.append('text')
-	      .attr('class', 'axisLabel')
-	      .attr('y', svgHeight + xAxisOffset)
-	      .attr('x', svgWidth/2)
-	      .attr('text-anchor', 'middle')
-	      .text("Time Interval");
+		// adds x-axis label - changed by Marit
+		svg.append("text")
+			.attr("text-anchor", "end")			
+			.attr('class', 'axisLabel')
+			.attr("x", svgWidth/2 + margin.left)
+			.attr("y", svgHeight + margin.top + 10)
+			.style("font-size", "14px")
+			.style("font-family", "Arial")
+			.text("Time Interval");
 
 		/*
-
 		Y Scale
-
 		*/
 
 	  yScale = d3.scaleLinear()
@@ -289,24 +283,24 @@ function barChart(param, div){
 	    .range([svgHeight, 0])
 
 		/*
-
 		Y axis formatting
-
 		*/
 
 	  const yAxis = d3.axisLeft(yScale)
 	    .tickSizeOuter(0)
 	  const yAxisGroup = svg.append('g')
 	    .call(yAxis)
-
-	  yAxisOffset = -70
-	  svg.append('text')
-	    .attr('class', 'axisLabel')
-	    .attr('y', yAxisOffset)
-	    .attr('x', -svgHeight/2)
-	    .attr('transform', `rotate(-90)`) // rotate axis by 90 degrees x->y and y->x
-	    .attr('text-anchor', 'middle')
-	    .text(param);
+	
+	// adds y-axis label - changed by Marit
+	svg.append("text")
+		.attr("text-anchor", "end")
+		.attr('class', 'axisLabel')
+		.style("font-size", "14px")
+		.style("font-family", "Arial")
+		.attr("transform", "rotate(-90)")
+		.attr("y", -margin.left/2.8-20)
+		.attr("x", -margin.top )
+		.text(param+ " [1]");
 
 	  svg.selectAll(".tick")
 	    .filter(function (d) { return d === 0;  })
@@ -320,9 +314,7 @@ function barChart(param, div){
 		  const brusher = svg.append("g")
 
 			/*
-
 			Rendering the bars
-
 			*/
 
 				svg.selectAll("rect")

@@ -3,29 +3,50 @@
 
 
 <script type="text/javascript" >
-    document.getElementById("info").innerHTML = "<h1>Heartrate Data</h1>";
+    document.getElementById("info").innerHTML = "<h1 class=HR>Heartrate Data</h1>";
     dataset = {{ data | safe }};
 </script>
 
-<!--Run lineplot visualization-->
-<h3 id="hrTitle"></h3>
-<div id="hrDiv"></div>
+<!--Import scripts-->
 <script src="{{ url_for('static', filename='lineplot.js') }}"></script>
-<body onload="lineplot('HR', '#hrDiv', '#e0432f', 'hrTitle')"> 
+<script src="{{ url_for('static', filename='scatterplot.js') }}"></script>
+<script src="{{ url_for('static', filename='boxplot.js') }}"></script>
+
+<!--Load functions onload-->
+<body onload="lineplot('HR', '#hrDiv', '#e0432f', 'hrTitle'); 
+scatterplot('HR', 'hrDiv2', 'hrTitle2', '#e0432f', document.getElementById('sampleSize').value); 
+boxplot('HR', 'boxplot', '#e0432f')" >
 
 
-<!--Run scatterplot visualization on update
+<!--Run lineplot visualization-->
+<h2 class="collapsible">Lineplot <i class="fas fa-info-circle" title="show lineplot of heartrate data"></i></h2>
+<div class="content">
+    <h2 id="hrTitle"></h2>
+    <div id="hrDiv"></div>
+    <script src="{{ url_for('static', filename='lineplot.js') }}"></script>
+</div>
+
+
+<!--Run scatterplot visualization-->
 <script src="{{ url_for('static', filename='scatterplot.js') }}"></script>
 
-<h3 id="hrTitle"></h3>
-<label id="range">Enter number of dots to sample (500-10,000):</label>
-<input type="number" id="sampleSize" name="sampleSize" min="500" max="10000" value="500">
-<input type="submit" id="submit" value="Plot">
-<div id="hrDiv"></div>
--->
+<h2 class="collapsible">Scatterplot <i class="fas fa-info-circle" title="show scatterplot of heartrate data"></i></h2>
+<div class="content">
+    <h2 id="hrTitle2"></h2>
+    <label id="range">Enter number of dots to sample (500-10,000):</label>
+    <input type="number" id="sampleSize" name="sampleSize" min="500" max="10000" value="500">
+    <input type="submit" id="submit" value="Plot">
+    <div id="hrDiv2"></div> 
+</div>
 
-<!--Run scatterplot visualization on load
-<body onload="scatterplot('HR', 'hrDiv', 'hrTitle', 'red', document.getElementById('sampleSize').value)">
--->
+<!--Run boxplot visualization -->
+<h2 class="collapsible">Boxplot <i class="fas fa-info-circle" title="show boxplot of heartrate data"></i></h2>
+<div class="content">
+    <div id="boxplot"></div>
+</div>
 
+
+<!-- Add extandable content -->
+<!-- source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible_animate -->
+<script src="{{ url_for('static', filename='extandable.js') }}"></script>
 {% endblock %}

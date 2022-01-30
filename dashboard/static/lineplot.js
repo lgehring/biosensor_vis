@@ -2,14 +2,20 @@
  * @author Nadja Volkmann 
  ***/
 /*** Inspired by: https://www.d3-graph-gallery.com/graph/line_brushZoom.html 
-                  https://www.d3-graph-gallery.com/graph/line_cursor.html ***/
+                  https://www.d3-graph-gallery.com/graph/line_cursor.html
+                  https://www.d3-graph-gallery.com/graph/line_color_gradient_svg.html ***/
+
 
 function lineplot(visparameter, divName, color, titleID) {
 
-// set svg dimensions and margins
-const svgWidth = 800 ;
-const svgHeight = 360;
-const margin = {top: 20, right: 30, bottom: 40, left: 50};
+// units
+const unitHR = " [BPM]"
+const unitTemp = " [F]"
+
+// set svg dimensions and margins - changed by Marit
+const margin = {top: 20, right: 30, bottom: 40, left: 100};
+const svgWidth = 800  - margin.left - margin.right;
+const svgHeight = 360 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
 let svg = d3.select(divName)
@@ -37,9 +43,7 @@ var rowConverter = function(d) {
 
 //load the data
 d3.csv(dataset, rowConverter).then(function(data) {
-  console.log(data); 
-  console.log(data[d3.maxIndex(data, d => d.Steps)])
-  
+
   // Add X axis 
   var xScale = d3.scaleTime()
       .domain(d3.extent(data, function(d) {return d.Time;}))
@@ -48,12 +52,33 @@ d3.csv(dataset, rowConverter).then(function(data) {
       .attr("transform", "translate(0," + svgHeight + ")")
       .call(d3.axisBottom(xScale));
 
+  // max and min y-values
+  const max = d3.max(data, function(d) {return +eval("d." + visparameter);})
+  const min = d3.min(data, function(d) {return +eval("d." + visparameter);})
+    
   // Add Y axis
   var yScale = d3.scaleLinear()
-      .domain([0, d3.max(data, function(d) {return +eval("d." + visparameter);})])
+      .domain([min - 5, max])
       .range([svgHeight, 0]);
   let yAxis = svg.append("g")
       .call(d3.axisLeft(yScale));
+
+  // set gradient 
+  svg.append('linearGradient')
+      .attr("id", "line-gradient")
+      .attr("gradientUnits", "userSpaceOnUse")
+      .attr("x1", 0)
+      .attr("y1", yScale(min))
+      .attr("x2", 0)
+      .attr("y2", yScale(max))
+      .selectAll("stop")
+        .data([
+          {offset: "0%", color: "blue"},
+          {offset: "100%", color: color}
+        ])
+      .enter().append("stop")
+        .attr("offset", function(d) {return d.offset})
+        .attr("stop-color", function(d) { return d.color; });
 
   // Add a clipPath: everything out of this area won't be drawn.
   var clip = svg.append("defs").append("svg:clipPath")
@@ -82,7 +107,7 @@ d3.csv(dataset, rowConverter).then(function(data) {
     .append('circle')
       .style("fill", "none")
       .attr("stroke", "black")
-      .attr('r', 4)
+      .attr('r', 6)
       .style("opacity", 0)
 
   // Create the text that moves along line
@@ -93,7 +118,6 @@ d3.csv(dataset, rowConverter).then(function(data) {
     .style("background-color", "black")
     .style("color", "white")
     .style("border", "none")
-    //.style("border-radius", "7px")
     .style("padding", "10px")
 
   // Add the line
@@ -102,14 +126,11 @@ d3.csv(dataset, rowConverter).then(function(data) {
   .attr("class", "line")
   .attr("fill", "none")
   .style("pointer-events", "all")
-  .attr("stroke", color)
-  .attr("opacity", 0.8)
-  .attr("stroke-width", 1)
+  .attr("stroke", "url(#line-gradient)")
   .attr("d", d3.line()
     .defined(function (d) { return eval("d." + visparameter) ;})
     .x(function(d) { return xScale(d.Time); })
     .y(function(d) { return yScale(eval("d." + visparameter)); }))
-
 
   // What happens when the mouse move -> show the annotations at the right positions
   function mouseover() {
@@ -120,7 +141,6 @@ d3.csv(dataset, rowConverter).then(function(data) {
   function mousemove(event, d) {
     // get current x-coordinate
     var x0 = xScale.invert(d3.pointer(event, this)[0]-242-margin.left);
-    console.log(d3.pointer(event, this)[0]);
     var i = bisect(data, x0, 1),
     d0 = data[i - 1],
     d1 = data[i],
@@ -142,35 +162,42 @@ d3.csv(dataset, rowConverter).then(function(data) {
     focusText.style("opacity", 0)
   }
 
-
-  function time_start() { return String(xScale.domain()[0]).split(' ').slice(0,5).join(' ') }
-  function time_end() { return String(xScale.domain()[1]).split(' ').slice(0,5).join(' ') }
-  
   // Define date format
   let dateFormat = d3.timeFormat("%a %d.%m.%Y, %H:%M");
 
   // Set title
   document.getElementById(titleID).innerHTML = dateFormat(xScale.domain()[0].getTime()) + ' to ' + dateFormat(xScale.domain()[1].getTime())
 
-  // adds x-axis label 
+  // get unit -- implemented by Marit
+  function unit(param){
+    unit = "";
+    if(param == "HR"){
+      unit = unitHR;
+    } else if (param == "Temperature"){
+      unit = unitTemp;
+    }
+    return unit;
+  }
+
+  // adds x-axis label - changed by Marit
   svg.append("text")
-    .attr("class", "xLabel")
     .attr("text-anchor", "end")
-    .attr("x", svgWidth)
-    .attr("y", svgHeight + margin.bottom)
+    .attr("x", svgWidth/2 + margin.left)
+    .attr("y", svgHeight + margin.top + 10)
+    .style("font-size", "14px")
+    .style("font-family", "Arial")
     .text("Time");
 
-  // adds x-axis label 
-    svg.append("text")
-    .attr("class", "yLabel")
+  // adds y-axis label - changed by Marit
+  svg.append("text")
     .attr("text-anchor", "end")
-    .attr("y", -margin.left)
-    .attr("x", 0)
-    .attr("dy", "1em")
+    .style("font-size", "14px")
+    .style("font-family", "Arial")
     .attr("transform", "rotate(-90)")
-    .text(visparameter);
+    .attr("y", -margin.left/2.8)
+    .attr("x", -margin.top )
+    .text(visparameter+ unit(visparameter));
   
-
   // Add the brushing
   line
   .append("g")
@@ -193,19 +220,14 @@ d3.csv(dataset, rowConverter).then(function(data) {
       xScale.domain([ 4,8])
     }else{
       xScale.domain([ xScale.invert(selection[0]), xScale.invert(selection[1]) ])
-      //console.log(xScale.domain());
       line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
     }
   // Update axis and line 
   xAxis.transition().duration(500).call(d3.axisBottom(xScale))
-  //newWidth = d3.select(".line").style("stroke-width") + 0.5
-  //svg.select("."+titleID).text(time_start() + " - " + time_end());
   document.getElementById(titleID).innerHTML = dateFormat(xScale.domain()[0].getTime()) + ' to ' + dateFormat(xScale.domain()[1].getTime())
-
 
   line
       .select('.line')
-      //.attr("stroke-width", newWidth)
       .transition()
       .duration(500)
       .attr("d", d3.line()

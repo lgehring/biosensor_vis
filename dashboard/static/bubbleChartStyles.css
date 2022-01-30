@@ -1,0 +1,23 @@
+.tick text{
+    font-size: 1.2em;
+    color: rgb(110, 110, 110);
+    font-weight: bold;
+    font-family: sans-serif;
+  }
+  
+  
+  .axisLabel{
+    font-size: 1.5em;
+    fill: rgb(108, 105, 107);
+    font-family: sans-serif;
+  }
+  
+  .circles{
+    fill: rgb(110, 110, 110);
+    opacity: 1;
+  }
+  
+  .circles:hover{
+      stroke: black;
+    stroke-width: 1.5;
+  }
