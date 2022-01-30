@@ -2,10 +2,10 @@
  * @author Nadja Volkmann 
  ***/
 /*** Inspired by: https://www.d3-graph-gallery.com/graph/chord_axis_labels.html 
- ***/
-
+                  http://bl.ocks.org/nbremer/94db779237655907b907 ***/
 
 function chordgraph(divName) {
+
     // parse the time
     var parseTime = d3.timeParse("%Y-%m-%d %H:%M:00+00:00");  
 
@@ -20,9 +20,8 @@ function chordgraph(divName) {
         };
     }
 
+    // read in the data
     d3.csv(dataset, rowConverter).then(function(data) {
-        console.log(data); 
-        console.log(data[d3.maxIndex(data, d => d.Steps)])
         cols = data.columns
         var columns = {
             Time: 'interval',
@@ -42,11 +41,10 @@ function chordgraph(divName) {
                 corr_matrix[j-1][i-1] = Math.abs(r.correlationCoefficient);
             }
         }
-        console.log(corr_matrix) 
-
 
         // specify colors for each variable in chord graph 
         var colors = ["#00963c", "#e0432f", "#EB8015", "#245d96"]
+
         // create the svg area
         var svg = d3.select(divName)
             .append("svg")
@@ -60,7 +58,6 @@ function chordgraph(divName) {
             .sortSubgroups(d3.descending)
             (corr_matrix)
 
-        
         // Add the links between groups
         svg
             .datum(res)
@@ -95,6 +92,7 @@ function chordgraph(divName) {
                     .innerRadius(190)
                     .outerRadius(200)
                     )
+
         // Returns an array of tick angles and values for a given group and step.
         function groupTicks(d, step) {
             var k = (d.endAngle - d.startAngle) / d.value;
@@ -105,9 +103,7 @@ function chordgraph(divName) {
 
         // Return angle for label 
         function groupLabel(d) {
-            console.log(d);
             var k = (d.endAngle - d.startAngle) / d.value;
-            console.log({value:  Math.round(d.value/2 * 10) /10 , angle: d.value * k + d.startAngle, name: cols[d.index + 1]});
             return [{value:  Math.round(d.value/2 * 10) /10 , angle: d.value/2 * k + d.startAngle, name: cols[d.index + 1]}];
         }
 
@@ -128,7 +124,6 @@ function chordgraph(divName) {
             .selectAll(".cg-group-tick-labels")
             .data(function(d) { return groupTicks(d, 0.2); })
             .enter()
-            //.filter(function(d) { return d.value % 0.2 === 0; })
             .append("g")
             .attr("class", "cg-tick-labels")
             .attr("transform", function(d) { return "rotate(" + (d.angle * 180 / Math.PI - 90) + ") translate(" + 205 + ",0)"; })
@@ -140,7 +135,6 @@ function chordgraph(divName) {
             .text(function(d) { return d.value })
             .style("font-size", 12)
 
-        
         // highlights correlations for selected variable 
         var highlightVariable = function(event, d) {
             d3.selectAll(".var").style("opacity", 0.1)
@@ -153,6 +147,7 @@ function chordgraph(divName) {
         }
 
         var names = ['Calories', 'Heartrate', 'Temperature', 'Steps']
+
         // add variable names as titles
         group.append("svg:text")
             .each(function(d) { d.angle = (d.startAngle + d.endAngle) / 2; })
@@ -165,7 +160,7 @@ function chordgraph(divName) {
 		            + (d.angle > Math.PI ? "rotate(180)" : "");
                 })
             .attr('opacity', 1)
-            .text(function(d) { console.log(names[d.index]); return names[d.index]; })
+            .text(function(d) {return names[d.index]; })
             .style("font-size", 20)
             .on("mouseover", (event, d) => {highlightVariable(event, d)})
             .on("mouseout", (event,d) => {highlightAll(event, d)})

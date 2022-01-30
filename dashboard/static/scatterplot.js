@@ -10,7 +10,6 @@
 // Optionally takes a start and end date for initial zoom window as datetime objects.
 function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start = null, end = null) {
     const margin = {top: 20, right: 30, bottom: 40, left: 100}, width = 800 - margin.left - margin.right,
-        height = 360 - margin.top - margin.bottom;
 
     const svg = d3.select('#' + divName)
         .append("svg")
@@ -123,6 +122,7 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
             .attr("y", -margin.left / 2.8)
             .attr("x", -margin.top)
             .text(visparameter + unit(visparameter));
+
 
         // Add a clipPath: everything out of this area won't be drawn.
         var clip = svg.append("defs").append("svg:clipPath")

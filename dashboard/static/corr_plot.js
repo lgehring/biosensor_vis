@@ -26,7 +26,7 @@ function correlationPlot(divName, dotcolor){
     // Check if subscribe button was clicked
     let sub = document.getElementById("sub");
         
-    sub.addEventListener("click", () => {
+    sub.addEventListener("click", (evt) => {
 
         // Check which variables were selected
         const v1 = document.getElementById("v1");
@@ -38,9 +38,9 @@ function correlationPlot(divName, dotcolor){
         if (var1 == "None" || var2 == "None") {
             document.getElementById("corr").innerHTML = "Choose a valid variable";
           } else {
+            sub.value="Refresh";
             // Delete old svg content
             svg.selectAll("*").remove();
-            d3.selectAll("path").remove()
 
             // Read data
             d3.csv(dataset).then(function (data) {
@@ -255,58 +255,51 @@ function correlationPlot(divName, dotcolor){
                 }
 
                 // Append linear regression if checkbox checked
-                linRegrCheck.addEventListener("change", () => {
-                    let linregr = document.getElementById("linregr");
-                    let svgID = "lin" + var1 + var2;
-                    if (linRegrCheck.checked) {
-                        // inform about values
-                        linregr.innerHTML = "Linear regression: y = " +  roundto2dig(regression.a) + " * x + " + 
-                        roundto2dig(regression.b) + " | R<sup>2</sup> = "+   roundto2dig(regression.rSquared);
-                        linregr.style.color = linregrColor;
-                        // add to plot
-                        plotRegr(regression, linregrColor, svgID)
-                    } else {
-                        linregr.innerHTML = "";
-                        svg.select("#"+ svgID).remove();
-                    }
-                })
+                let linregr = document.getElementById("linregr");
+                let linsvgID = "lin" + var1 + var2;
+                if (linRegrCheck.checked) {
+                    // inform about values
+                    linregr.innerHTML = "Linear regression: y = " +  roundto2dig(regression.a) + " * x + " + 
+                    roundto2dig(regression.b) + " | R<sup>2</sup> = "+   roundto2dig(regression.rSquared);
+                    linregr.style.color = linregrColor;
+                    // add to plot
+                    plotRegr(regression, linregrColor, linsvgID)
+                } else {
+                    linregr.innerHTML = "";
+                    svg.select("#"+ linsvgID).remove();
+                }
 
                 // Append quadratic regression if checkbox checked
-                quadRegrCheck.addEventListener("change", () => {
-                    let quadregr = document.getElementById("quadregr");
-                    let svgID = "quad" + var1 + var2;
-                    if (quadRegrCheck.checked) {
-                        // inform about values
-                        quadregr.innerHTML = "Quadratic regression: y = " + roundto2dig(quadregression.a) + " * x<sup>2</sup> + " + 
-                        roundto2dig(quadregression.b) +"* x + "+  roundto2dig(quadregression.c) + " | R<sup>2</sup> = " +  roundto2dig(quadregression.rSquared);
-                        quadregr.style.color = quadreColor;
-                        // add to plot
-                        plotRegr(quadregression, quadreColor, svgID)
-                    } else {
-                        quadregr.innerHTML = "";
-                        svg.select("#"+svgID).remove();
-                    }
-                })
+                let quadregr = document.getElementById("quadregr");
+                let quadsvgID = "quad" + var1 + var2;
+                if (quadRegrCheck.checked) {
+                    // inform about values
+                    quadregr.innerHTML = "Quadratic regression: y = " + roundto2dig(quadregression.a) + " * x<sup>2</sup> + " + 
+                    roundto2dig(quadregression.b) +"* x + "+  roundto2dig(quadregression.c) + " | R<sup>2</sup> = " +  roundto2dig(quadregression.rSquared);
+                    quadregr.style.color = quadreColor;
+                    // add to plot
+                    plotRegr(quadregression, quadreColor, quadsvgID)
+                } else {
+                    quadregr.innerHTML = "";
+                    svg.select("#"+quadsvgID).remove();
+                }
 
                 // Append polynomial regression if checkbox checked
-                polRegrCheck.addEventListener("change", () => {
-                    let polregr = document.getElementById("polregr");
-                    let svgID = "pol" + var1 + var2;
-                    if (polRegrCheck.checked) {
-                        // add to plot
-                        plotRegr(polregression, polreColor, svgID)
-                        // inform about values
-                        polregr.innerHTML = "Polynomail regression (order = 3): y = " + roundto2dig(polregression.coefficients[3]) + " * x<sup>3</sup> + " + 
-                        roundto2dig(polregression.coefficients[2])  + " * x<sup>2</sup> + " + 
-                        roundto2dig(polregression.coefficients[1]) +"* x + "+  roundto2dig(polregression.coefficients[0]) + " | R<sup>2</sup> = " +  
-                        roundto2dig(polregression.rSquared);
-                        polregr.style.color = polreColor;
-                    } else {
-                        polregr.innerHTML = "";
-                        svg.select("#" + svgID).remove();
-                    }
-                })
-
+                let polregr = document.getElementById("polregr");
+                let polsvgID = "pol" + var1 + var2;
+                if (polRegrCheck.checked) {
+                    // add to plot
+                    plotRegr(polregression, polreColor, polsvgID)
+                    // inform about values
+                    polregr.innerHTML = "Polynomail regression (order = 3): y = " + roundto2dig(polregression.coefficients[3]) + " * x<sup>3</sup> + " + 
+                    roundto2dig(polregression.coefficients[2])  + " * x<sup>2</sup> + " + 
+                    roundto2dig(polregression.coefficients[1]) +"* x + "+  roundto2dig(polregression.coefficients[0]) + " | R<sup>2</sup> = " +  
+                    roundto2dig(polregression.rSquared);
+                    polregr.style.color = polreColor;
+                } else {
+                    polregr.innerHTML = "";
+                    svg.select("#" + polsvgID).remove();
+                }
             })
           }
     });

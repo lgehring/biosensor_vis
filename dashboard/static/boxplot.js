@@ -10,6 +10,7 @@ function boxplot(visparameter, divName, boxcolor, start = null, end = null) {
     const margin = {top: 10, right: 30, bottom: 30, left: 60}, width = 200 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
 
+
     const svg = d3.select('#' + divName)
         .append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -76,8 +77,64 @@ function boxplot(visparameter, divName, boxcolor, start = null, end = null) {
         // Add Y scale
         let y = d3.scaleLinear()
             .domain([min - interQuantileRange / 4, max + interQuantileRange / 4])
+        
+        // Compute summary statistics used for the box:
+        let data_sorted = visCol.sort(d3.ascending).filter(function(value, index, arr){
+            return value != 0;
+        });
+        //console.log(data_sorted)
+        let q1 = d3.quantile(data_sorted, .25)
+        //console.log(q1)
+        let median = d3.quantile(data_sorted, .5)
+        let q3 = d3.quantile(data_sorted, .75)
+        //console.log(q3)
+        let interQuantileRange = q3 - q1
+        //console.log(interQuantileRange)
+        let min = q1 - 1.5 * interQuantileRange
+        //console.log(min)
+        let max = q1 + 1.5 * interQuantileRange
+        //console.log(max)
+
+        // adds y-axis label - changed by Marit
+        // units
+        const unitHR = " [BPM]";
+        const unitTemp = " [F]";
+        const unitCal = " [1]";
+        const unitSteps = " [1]";
+
+        // get unit -- implemented by Marit
+        function unit(param){
+            unit = "";
+            if(param == "HR"){
+            unit = unitHR;
+            } else if (param == "Temperature"){
+            unit = unitTemp;
+            } else if (param == "Calories"){
+                unit = unitCal;
+            } else if (param == "Steps"){
+                unit = unitSteps;
+            }
+            return unit;
+        }
+
+        // Show the Y scale
+        let y = d3.scaleLinear()
+            .domain([min - interQuantileRange/4, max + interQuantileRange/4])
             .range([height, 0]);
-        svg.call(d3.axisLeft(y))
+        svg.append("g")
+            .call(d3.axisLeft(y))
+        .append("text")
+            .attr("text-anchor", "end")
+            .style("font-size", "14px")
+            .style("font-family", "Arial")
+            .style('fill', 'black')
+            .attr("transform", "rotate(-90)")
+            .attr("y", -margin.left/2.8)
+            .attr("x", -margin.top )
+            .text(visparameter + unit(visparameter));
+        
+        
+
 
         // Add Y-axis label - changed by Marit
         // Units
@@ -112,6 +169,7 @@ function boxplot(visparameter, divName, boxcolor, start = null, end = null) {
             .text(visparameter + unit(visparameter));
 
         // Box location/size
+        // a few features for the box
         let center = 75
         let width = 75
 

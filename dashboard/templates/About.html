@@ -3,19 +3,56 @@
 <script>
     document.getElementById("info").innerHTML = "<h1>About this website</h1>";
 </script>
-<h2>This a project for the lecture "Visualization of Biological Data" in winter term 2021/22</h2>
+
 <h2>Authors (alph.): Lea Heinen, Lukas Gehring, Marit Bockstedte & Nadja Volkmann </h2>
 <h2>V 1.0</h2>
 
+<h1>About this project</h1>
+<h2>This a project for the lecture "Visualization of Biological Data" in winter term 2021/22</h2>
+
+<h2 class="collapsible">Ganttchart </h2>
+<div class="content">
+    <embed src="{{ url_for('static', filename='GanttChart.pdf') }}" width="800px" height="400px" />
+</div>
+
 <h1>About the visualizations</h1>
-<h2>Scatterplot</h2>
-<p>The scatter plot is a uniform random sample of all data-points in the given timeframe with the given sample-size.<br>
+
+<h2 class="collapsible">Scatterplot </h2>
+<div class="content">
+    <p>The scatter plot is a uniform random sample of all data-points in the given timeframe with the given sample-size.<br>
 Zooming is possible via click-hold selection. A double click resets the time axis and custom sample-size.</p>
-<h2>Boxplot</h2>
-<p>The box plot is a data distribution visualization of all data-points in the given timeframe.</p>
-<h2>Correlation Analysis of daily data</h2>
-<p>This visualization contains a correlation analysis of the data aggregated per day. In this analysis, the sum of 
+</div>
+
+<h2 class="collapsible">Lineplot </h2>
+<div class="content">
+</div>
+
+<h2 class="collapsible">Barchart </h2>
+<div class="content">
+</div>
+
+<h2 class="collapsible">Boxplot </h2>
+<div class="content">
+    The box plot is a data distribution visualization of all data-points in the given timeframe.
+</div>
+
+<h2 class="collapsible">Bubblechart </h2>
+<div class="content">
+</div>
+
+<h2 class="collapsible">Chordgraph </h2>
+<div class="content">
+</div>
+
+<h2 class="collapsible">Correlation Analysis of daily data</h2>
+<div class="content">
+    <p>This visualization contains a correlation analysis of the data aggregated per day. In this analysis, the sum of 
     calories and steps is determined, and the mean value is determined for temperature and heart rate. The correlation measure 
     (Pearson correlation coefficient) is automatically displayed. Regression equations can be inserted through the data points and linear, 
     quadratic and polynomial (order=3) regression equations can be displayed with the corresponding R<sup>2</sup>-value.</p>
+</div>
+
+<!-- Add extandable content -->
+<!-- source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible_animate -->
+<script src="{{ url_for('static', filename='extandable.js') }}"></script>
 {% endblock %}
