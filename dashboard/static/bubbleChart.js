@@ -2,12 +2,13 @@ comboBox = document.getElementById("combo")
 
 function bubbleChart(div){
 	// Helping functions:
-	const getWeekDay = d3.timeFormat("%A")
-	const getHour = d3.timeFormat("%H")
+
+	// parse the dates to be used nested later on
 	const parseDateHours = d3.timeFormat("%d.%m.%Y, %H:00");
 	const getHourAndWeekDay = d3.timeFormat("%A,%H")
 
 	function parseEuropeanDate(input) {
+		// takes a european date and parses it into a iso date format
 		var parts = input.match(/(\d+)/g);
 		if (parts.length > 3){
 			return new Date(parts[2], parts[1]-1, parts[0],
@@ -18,17 +19,16 @@ function bubbleChart(div){
 	}
 
 	function round(number){
+		// rounds a number to 2 places after the comma
 		return Math.round(number*100)/100
 	}
 
 	/*
-
 	 set svg dimensions and margins
-
 	*/
-	const svgWidth = 1100;
-	const svgHeight = 600;
-	const margin = {top: 110, right: 140, bottom: 60, left: 170}
+	const margin = {top: 20, right: 30, bottom: 40, left: 100};
+	const svgWidth = 800  - margin.left - margin.right;
+	const svgHeight = 360 - margin.top - margin.bottom;
 
 	// append the svg object to the body of the page
 	let svg = d3.select(div)
@@ -43,6 +43,8 @@ function bubbleChart(div){
 	const render = (dataArray, param) =>{
 		// removes everything, when new plot is rendered
 		svg.selectAll('*').remove();
+
+
 		const xVal = d => d.Hour
 		const yVal = d => d.Weekday
 		const zVal = d => d.value
@@ -62,6 +64,7 @@ function bubbleChart(div){
 			.call(xAxis)
 		xAxisGroup.selectAll('.domain').remove();
 
+		// x axis label
 		xAxisOffset = -80
 		svg.append('text')
 				.attr('class', 'axisLabel')
@@ -88,6 +91,7 @@ function bubbleChart(div){
 			.call(yAxis)
 		yAxisGroup.selectAll('.domain').remove();
 
+		// y axis label
 		yAxisOffset = -130
 		svg.append('text')
 			.attr('class', 'axisLabel')
@@ -100,13 +104,11 @@ function bubbleChart(div){
 
 			/*
 			formatting the circles
-
 			*/
-
 
 		const circleScale = d3.scaleSqrt()
 			.domain(d3.extent(dataArray, zVal))
-			.range([3, 25])
+			.range([1, 16])
 
 		var circleFill = d3.scaleSequential()
 			.domain(d3.extent(dataArray, zVal))
