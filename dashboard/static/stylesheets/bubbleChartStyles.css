@@ -1,15 +1,8 @@
+/* @author: Lea Heinen*/
+
 #combo{
   margin-bottom: 30px;
 }
-
-
-.tick text{
-  font-size: 1.7em;
-  color: rgb(110, 110, 110);
-  font-weight: bold;
-  font-family: sans-serif;
-}
-
 
 .axisLabel{
   font-size: 1.8em;

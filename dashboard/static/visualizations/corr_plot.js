@@ -165,7 +165,7 @@ function correlationPlot(divName, dotcolor){
                 svg.append("text")
                     .attr("text-anchor", "end")
                     .attr("x", width/2 + margin.left)
-                    .attr("y", height + margin.top + 10)
+                    .attr("y", height + margin.top + 20)
                     .style("font-size", "14px")
                     .style("font-family", "Arial")
                     .text(var1 + toUnit(var1));
@@ -183,7 +183,7 @@ function correlationPlot(divName, dotcolor){
                     .style("font-size", "14px")
                     .style("font-family", "Arial")
                     .attr("transform", "rotate(-90)")
-                    .attr("y", -margin.left/2.5)
+                    .attr("y", -margin.left/2)
                     .attr("x", -margin.top )
                     .text(var2 + toUnit(var2))
 

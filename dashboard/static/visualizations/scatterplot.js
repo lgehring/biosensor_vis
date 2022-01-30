@@ -109,7 +109,7 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
         svg.append("text")
             .attr("text-anchor", "end")
             .attr("x", width / 2 + margin.left)
-            .attr("y", height + margin.top + 10)
+            .attr("y", height + margin.top + 20)
             .style("font-size", "14px")
             .style("font-family", "Arial")
             .text("Time");
@@ -120,7 +120,7 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
             .style("font-size", "14px")
             .style("font-family", "Arial")
             .attr("transform", "rotate(-90)")
-            .attr("y", -margin.left / 2.8)
+            .attr("y", -margin.left / 2)
             .attr("x", -margin.top)
             .text(visparameter + unit(visparameter));
 

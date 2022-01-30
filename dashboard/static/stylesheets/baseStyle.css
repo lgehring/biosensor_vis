@@ -30,6 +30,11 @@ h1{
     font-size: 30px;
     font-weight: bold;
 }
+
+text{
+  color: rgb(110, 110, 110);
+  fill: rgb(108, 105, 107);
+}
 /*style h11 per website */
 h1.Analysis{
   color: var(--Analysis_color)

@@ -1,7 +1,9 @@
+<!--
+ * @author Marit Bockstedte
+ *  
+-->
 {% extends "base.html" %}
 {% block content %}
-
-
 
 <script type="text/javascript">
     document.getElementById("info").innerHTML = "<h1 class=Analysis>Data Analysis</h1>";
@@ -9,15 +11,18 @@
 </script>
 
 <!--Import statistics package-->
-<script src="{{ url_for('static', filename='statistics.js') }}"></script>
-<script src="{{ url_for('static', filename='d3-regression.js') }}"></script>
-<script src="{{ url_for('static', filename='bubbleChart.js') }}"></script>
-<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='bubbleChartStyles.css') }}" >
+<script src="{{ url_for('static', filename='/packages/statistics.js') }}"></script>
+<script src="{{ url_for('static', filename='/packages/d3-regression.js') }}"></script>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 
+<!--Import stylesheets-->
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='/stylesheets/bubbleChartStyles.css') }}" >
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='/stylesheets/dataAnalysis.css') }}" >
+
 <!--Import scripts-->
-<script src="{{ url_for('static', filename='chordgraph.js') }}"></script>
-<script src="{{ url_for('static', filename='corr_plot.js') }}"></script>
+<script src="{{ url_for('static', filename='/visualizations/chordgraph.js') }}"></script>
+<script src="{{ url_for('static', filename='/visualizations/corr_plot.js') }}"></script>
+<script src="{{ url_for('static', filename='/visualizations/bubbleChart.js') }}"></script>
 
 <!--Load functions onload-->
 <body onload="chordgraph('#chordgraph');correlationPlot('#corrPlot', 'blue', 250);bubbleChart('#bubbleChart')">

@@ -1,4 +1,8 @@
-function barChart(param, div, color){
+/***
+ * @author Lea Heinen
+ ***/
+
+ function barChart(param, div, color){
 	console.log("colors colors on the wall");
 	// elements from html file (buttons and checkbox)
 	const buttonMonth_div = document.getElementById("ButtonMonth");
@@ -276,7 +280,7 @@ function barChart(param, div, color){
 			.attr("text-anchor", "end")
 			.attr('class', 'axisLabel')
 			.attr("x", svgWidth/2 + margin.left)
-			.attr("y", svgHeight + margin.top + 10)
+			.attr("y", svgHeight + margin.top+ 20)
 			.style("font-size", "14px")
 			.style("font-family", "Arial")
 			.text("Time Interval");
@@ -305,8 +309,8 @@ function barChart(param, div, color){
 		.style("font-size", "14px")
 		.style("font-family", "Arial")
 		.attr("transform", "rotate(-90)")
-		.attr("y", -margin.left/2.8-20)
-		.attr("x", -margin.top )
+		.attr("y", -margin.left/1.7)
+		.attr("x", -margin.top)
 		.text(param+ " [1]");
 
 	  svg.selectAll(".tick")

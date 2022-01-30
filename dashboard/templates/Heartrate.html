@@ -1,6 +1,9 @@
+<!--
+ * @author Marit Bockstedte
+ *  
+-->
 {% extends "base.html" %}
 {% block content %}
-
 
 <script type="text/javascript" >
     document.getElementById("info").innerHTML = "<h1 class=HR>Heartrate Data</h1>";
@@ -8,9 +11,9 @@
 </script>
 
 <!--Import scripts-->
-<script src="{{ url_for('static', filename='lineplot.js') }}"></script>
-<script src="{{ url_for('static', filename='scatterplot.js') }}"></script>
-<script src="{{ url_for('static', filename='boxplot.js') }}"></script>
+<script src="{{ url_for('static', filename='/visualizations/lineplot.js') }}"></script>
+<script src="{{ url_for('static', filename='/visualizations/scatterplot.js') }}"></script>
+<script src="{{ url_for('static', filename='/visualizations/boxplot.js') }}"></script>
 
 <!--Load functions onload-->
 <body onload="lineplot('HR', '#hrDiv', '#e0432f', 'hrTitle'); 
@@ -23,7 +26,6 @@ boxplot('HR', 'boxplot', '#e0432f')" >
 <div class="content">
     <h2 id="hrTitle"></h2>
     <div id="hrDiv"></div>
-    <script src="{{ url_for('static', filename='lineplot.js') }}"></script>
 </div>
 
 
