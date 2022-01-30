@@ -7,7 +7,7 @@
 // Enter name of visparameter as given in the CSV Header and boxcolor as a string.
 // Optionally takes a start and end date for the data used as datetime objects.
 function boxplot(visparameter, divName, boxcolor, start = null, end = null) {
-    const margin = {top: 10, right: 30, bottom: 30, left: 60}, width = 200 - margin.left - margin.right,
+    const margin = {top: 10, right: 30, bottom: 30, left: 80}, width = 200 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
 
 
@@ -73,27 +73,8 @@ function boxplot(visparameter, divName, boxcolor, start = null, end = null) {
         let interQuantileRange = q3 - q1
         let min = q1 - 1.5 * interQuantileRange
         let max = q1 + 1.5 * interQuantileRange
-
-        // Add Y scale
-        let y = d3.scaleLinear()
-            .domain([min - interQuantileRange / 4, max + interQuantileRange / 4])
+        console.log(visparamData_sorted)
         
-        // Compute summary statistics used for the box:
-        let data_sorted = visCol.sort(d3.ascending).filter(function(value, index, arr){
-            return value != 0;
-        });
-        //console.log(data_sorted)
-        let q1 = d3.quantile(data_sorted, .25)
-        //console.log(q1)
-        let median = d3.quantile(data_sorted, .5)
-        let q3 = d3.quantile(data_sorted, .75)
-        //console.log(q3)
-        let interQuantileRange = q3 - q1
-        //console.log(interQuantileRange)
-        let min = q1 - 1.5 * interQuantileRange
-        //console.log(min)
-        let max = q1 + 1.5 * interQuantileRange
-        //console.log(max)
 
         // adds y-axis label - changed by Marit
         // units
@@ -132,42 +113,7 @@ function boxplot(visparameter, divName, boxcolor, start = null, end = null) {
             .attr("y", -margin.left/2.8)
             .attr("x", -margin.top )
             .text(visparameter + unit(visparameter));
-        
-        
-
-
-        // Add Y-axis label - changed by Marit
-        // Units
-        const unitHR = " [BPM]";
-        const unitTemp = " [F]";
-        const unitCal = " [1]";
-        const unitSteps = " [1]";
-
-        // Get Y-unit - implemented by Marit
-        function unit(param) {
-            unit = "";
-            if (param == "HR") {
-                unit = unitHR;
-            } else if (param == "Temperature") {
-                unit = unitTemp;
-            } else if (param == "Calories") {
-                unit = unitCal;
-            } else if (param == "Steps") {
-                unit = unitSteps;
-            }
-            return unit;
-        }
-
-        // Add Y-unit
-        svg.append("text")
-            .attr("text-anchor", "end")
-            .style("font-size", "14px")
-            .style("font-family", "Arial")
-            .attr("transform", "rotate(-90)")
-            .attr("y", -margin.left / 2.8)
-            .attr("x", -margin.top)
-            .text(visparameter + unit(visparameter));
-
+            
         // Box location/size
         // a few features for the box
         let center = 75

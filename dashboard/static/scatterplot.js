@@ -9,7 +9,8 @@
 // Enter name of visparameter as given in the CSV Header and dotcolor as a string.
 // Optionally takes a start and end date for initial zoom window as datetime objects.
 function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start = null, end = null) {
-    const margin = {top: 20, right: 30, bottom: 40, left: 100}, width = 800 - margin.left - margin.right,
+    const margin = {top: 20, right: 30, bottom: 40, left: 100}, width = 800 - margin.left - margin.right, 
+    height = 360 - margin.top - margin.bottom;
 
     const svg = d3.select('#' + divName)
         .append("svg")
