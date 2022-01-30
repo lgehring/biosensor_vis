@@ -1,11 +1,12 @@
 comboBox = document.getElementById("combo")
+console.log("He");
 
 function bubbleChart(div){
 	// Helping functions:
 
 	// parse the dates to be used nested later on
 	const parseDateHours = d3.timeFormat("%d.%m.%Y, %H:00");
-	const getHourAndWeekDay = d3.timeFormat("%A,%H")
+	const getHourAndWeekDay = d3.timeFormat("%a,%H")
 
 	function parseEuropeanDate(input) {
 		// takes a european date and parses it into a iso date format
@@ -26,7 +27,7 @@ function bubbleChart(div){
 	/*
 	 set svg dimensions and margins
 	*/
-	const margin = {top: 20, right: 30, bottom: 40, left: 100};
+	const margin = {top: 100, right: 120, bottom: 40, left: 120};
 	const svgWidth = 800  - margin.left - margin.right;
 	const svgHeight = 360 - margin.top - margin.bottom;
 
@@ -80,19 +81,19 @@ function bubbleChart(div){
 
 
 		const yScale = d3.scaleBand()
-			.domain(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
+			.domain(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
 			.range([0, svgHeight])
 
 		const yAxis = d3.axisLeft(yScale)
 			.ticks(7)
 			.tickSize(0)
 		const yAxisGroup = svg.append('g')
-			.attr("transform", `translate( ${-30},${-40})`)
+			.attr("transform", `translate( ${-30},${-15})`)
 			.call(yAxis)
 		yAxisGroup.selectAll('.domain').remove();
 
 		// y axis label
-		yAxisOffset = -130
+		yAxisOffset = -100
 		svg.append('text')
 			.attr('class', 'axisLabel')
 			.attr('y', yAxisOffset)
@@ -137,7 +138,7 @@ function bubbleChart(div){
 	  bigCircleVal = d3.max(dataArray, zVal)
 		smallCircleVal = d3.min(dataArray, zVal)
 		mediumCircleVal = smallCircleVal + (bigCircleVal - smallCircleVal)/2 //gets exactly the point inbetween
-	  legendVals = [bigCircleVal, mediumCircleVal, smallCircleVal] // biggest one on the bottom, so all can be hovered
+	  legendVals = [bigCircleVal, mediumCircleVal] // biggest one on the bottom, so all can be hovered
 	  svg.selectAll("legendCircles")
 	    .data(legendVals)
 	    .enter()
