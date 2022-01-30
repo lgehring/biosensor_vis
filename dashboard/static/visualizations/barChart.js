@@ -3,7 +3,7 @@
  ***/
 
  function barChart(param, div, color){
-	console.log("colors colors on the wall");
+	console.log("Last check");
 	// elements from html file (buttons and checkbox)
 	const buttonMonth_div = document.getElementById("ButtonMonth");
 	const buttonWeek_div = document.getElementById("ButtonWeek");
@@ -119,7 +119,6 @@
 			// e.g. Mar 2015, Apr 2016
 			//			--> 1st Mar 2015 00:00:00 and 30st Apr 2015 00:00:00
 			datePrecision = getPrecision(startDate)
-			console.log(datePrecision);
 			switch (datePrecision) {
 				case "Month":
 				  // first day of first given month
@@ -142,8 +141,6 @@
 					weekDays2 = getWeekDays(week2, year2)
 					end = weekDays2[1]
 					end.setHours(23); end.setMinutes(59);
-					console.log("start: " + start);
-					console.log("end: " + end);
 					break;
 				case "Day":
 				  // first hour + minute of first given day
@@ -173,10 +170,10 @@
 
 		function handleClick(date){
 			// handles the click on a bar
-			enableDoubleClick = true
 		  datePrecision = getPrecision(date)
 			startDate = getTimeRange(date, date)[0]
 			endDate = getTimeRange(date, date)[1]
+			enableDoubleClick = true
 			switch (datePrecision) {
 				case "Month":
 					// parses the dates correclty and selects the correct dataArray for rendering
@@ -352,8 +349,12 @@
 
 			brusher.call(brush)
 			svg.on("dblclick",function(){
+				console.log(enableDoubleClick);
 				if (enableDoubleClick){
 					 render(originalData, originalData[0], originalData.at(-1))
+				}
+				else{
+					alert("Zooming out due to computational issues not possible")
 				}});
 
 	};
@@ -368,6 +369,10 @@
 	  selected =  xScale.domain().filter(d =>
 	             	(extent[0] - xScale.bandwidth() <= xScale(d)) //bandwidth to include left bar, if touched by brush
 								&& (xScale(d) <= extent[1]));
+		precision = getPrecision(selected[0])
+		if (precision != "Minute"){
+			enableDoubleClick = true // resets enableDoubleClick to True
+		}
 		render(dataArray, selected[0], selected.at(-1))
 	}
 
