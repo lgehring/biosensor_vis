@@ -6,6 +6,7 @@
                   https://www.d3-graph-gallery.com/graph/line_color_gradient_svg.html ***/
 
 
+
 function lineplot(visparameter, divName, color, titleID) {
 
 // units
