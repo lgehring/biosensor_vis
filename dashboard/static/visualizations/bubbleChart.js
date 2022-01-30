@@ -30,7 +30,7 @@ function bubbleChart(div){
 	/*
 	 set svg dimensions and margins
 	*/
-	const margin = {top: 100, right: 120, bottom: 40, left: 120};
+	const margin = {top: 100, right: 180, bottom: 40, left: 120};
 	const svgWidth = 800  - margin.left - margin.right;
 	const svgHeight = 360 - margin.top - margin.bottom;
 
@@ -122,18 +122,18 @@ function bubbleChart(div){
 		// rendering the plot
 
 		svg.selectAll("circles")
-		.data(dataArray)
-		.enter()
-		.append("circle")
-		.attr("class", "circles")
-		.attr("cx", d => xScale(d.Hour))
-		.attr("cy", d => yScale(d.Weekday))
-		.attr("r", d => circleScale(d.value))
-		.style("fill", d => circleFill(d.value))
-		.append("title")
-			.text(d => "Time: " + d.Weekday + " " +
-			 			d.Hour +":00 - "+ (d.Hour+1) +":00"
-						+ "\n" + param + ": " + round(d.value))
+			.data(dataArray)
+			.enter()
+			.append("circle")
+			.attr("class", "circles")
+			.attr("cx", d => xScale(d.Hour))
+			.attr("cy", d => yScale(d.Weekday))
+			.attr("r", d => circleScale(d.value))
+			.style("fill", d => circleFill(d.value))
+			.append("title")
+				.text(d => "Time: " + d.Weekday + " " +
+							d.Hour +":00 - "+ (d.Hour+1) +":00"
+							+ "\n" + param + ": " + round(d.value))
 
 
 		// Legend for the circle sizes:
@@ -159,14 +159,14 @@ function bubbleChart(div){
 
 		// Legend label
 		svg.append("text")
-      .attr("class", "axisLabel")
-      .style("font-family", "sans-serif") // styling here, because it didn't work with css
-      .style("font-size", "1.2em")
-      .style("fill", "rgb(108, 105, 107)")
-      .attr('y', svgHeight - margin.bottom - 70)
-      .attr('x', svgWidth + xOffset)
-      .attr('text-anchor', 'middle')
-      .text(param)
+			.attr("class", "axisLabel")
+			.style("font-family", "sans-serif") // styling here, because it didn't work with css
+			.style("font-size", "1.2em")
+			.style("fill", "rgb(108, 105, 107)")
+			.attr('y', svgHeight - margin.bottom - 70)
+			.attr('x', svgWidth + xOffset)
+			.attr('text-anchor', 'middle')
+			.text(param)
 
 	}
 

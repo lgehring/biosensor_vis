@@ -187,7 +187,7 @@ d3.csv(dataset, rowConverter).then(function(data) {
   svg.append("text")
     .attr("text-anchor", "end")
     .attr("x", svgWidth/2 + margin.left)
-    .attr("y", svgHeight + margin.top + 10)
+    .attr("y", svgHeight + margin.top + 20)
     .style("font-size", "14px")
     .style("font-family", "Arial")
     .text("Time");
@@ -197,7 +197,7 @@ d3.csv(dataset, rowConverter).then(function(data) {
     .style("font-size", "14px")
     .style("font-family", "Arial")
     .attr("transform", "rotate(-90)")
-    .attr("y", -margin.left/2.8)
+    .attr("y", -margin.left/2)
     .attr("x", -margin.top )
     .text(visparameter+ unit(visparameter));
   

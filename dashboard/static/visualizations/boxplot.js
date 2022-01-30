@@ -7,7 +7,7 @@
 // Enter name of visparameter as given in the CSV Header and boxcolor as a string.
 // Optionally takes a start and end date for the data used as datetime objects.
 function boxplot(visparameter, divName, boxcolor, start = null, end = null) {
-    const margin = {top: 10, right: 30, bottom: 30, left: 80}, width = 200 - margin.left - margin.right,
+    const margin = {top: 10, right: 30, bottom: 30, left: 100}, width = 200 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
 
 
@@ -109,7 +109,7 @@ function boxplot(visparameter, divName, boxcolor, start = null, end = null) {
             .style("font-family", "Arial")
             .style('fill', 'black')
             .attr("transform", "rotate(-90)")
-            .attr("y", -margin.left/2.8)
+            .attr("y", -margin.left/2)
             .attr("x", -margin.top )
             .text(visparameter + unit(visparameter));
             
