@@ -7,6 +7,7 @@
 
 
 
+
 function lineplot(visparameter, divName, color, titleID) {
 
 // units
@@ -44,7 +45,9 @@ var rowConverter = function(d) {
 
 //load the data
 d3.csv(dataset, rowConverter).then(function(data) {
-
+  //console.log(data); 
+  //console.log(data[d3.maxIndex(data, d => d.Steps)])
+  
   // Add X axis 
   var xScale = d3.scaleTime()
       .domain(d3.extent(data, function(d) {return d.Time;}))
@@ -188,7 +191,6 @@ d3.csv(dataset, rowConverter).then(function(data) {
     .style("font-size", "14px")
     .style("font-family", "Arial")
     .text("Time");
-
   // adds y-axis label - changed by Marit
   svg.append("text")
     .attr("text-anchor", "end")

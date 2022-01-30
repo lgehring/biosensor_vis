@@ -40,7 +40,7 @@ function correlationPlot(divName, dotcolor){
           } else {
             sub.value="Refresh";
             // Delete old svg content
-            svg.selectAll("*").remove();   
+            svg.selectAll("*").remove();
 
             // Read data
             d3.csv(dataset).then(function (data) {
@@ -300,7 +300,6 @@ function correlationPlot(divName, dotcolor){
                     polregr.innerHTML = "";
                     svg.select("#" + polsvgID).remove();
                 }
-
             })
           }
     });

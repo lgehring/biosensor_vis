@@ -5,17 +5,11 @@
  ***/
 
 // Visualizes the given parameter by uniformly sampling the given number of dots.
-// Zooming is possible via brushing. When double clicking, zoom out and resample.
+// Zooming is possible via brushing. When double clicking, zoom out and reset dotcount.
 // Enter name of visparameter as given in the CSV Header and dotcolor as a string.
 // Optionally takes a start and end date for initial zoom window as datetime objects.
 function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start = null, end = null) {
-    // units
-    const unitHR = " [BPM]"
-    const unitTemp = " [F]"
-
-    const margin = {top: 20, right: 30, bottom: 40, left: 100},
-        width = 800 - margin.left - margin.right,
-        height = 360 - margin.top - margin.bottom;
+    const margin = {top: 20, right: 30, bottom: 40, left: 100}, width = 800 - margin.left - margin.right,
 
     const svg = d3.select('#' + divName)
         .append("svg")
@@ -31,9 +25,10 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
         return roundedDate
     }
 
-    // Read data
+    // Read and process data
     d3.csv(dataset).then(function (data) {
-        // Preprocess --------------------------------------------------------------------------
+        // Preprocess data ----------------------------------------------------------
+        // Converts strings from the CSV to number or null
         function toNumber(d) {
             if (d != '') {
                 return +d
@@ -42,7 +37,7 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
             }
         }
 
-        // Read in as correct datatypes
+        // Read data and convert to correct type
         data.forEach(function (d) {
             d.Time = d3.isoParse(d.Time);
             d.Calories = toNumber(d.Calories);
@@ -51,7 +46,7 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
             d.Steps = toNumber(d.Steps);
         });
 
-        // Find max HR + min/max Time
+        // Find min/max HR + Time
         const maxVis = d3.max(data, function (d) {
             return eval("d." + visparameter);
         });
@@ -65,20 +60,20 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
             return d.Time;
         });
 
-        // First axis limits
+        // Initial axis limits
         let minTimeTemp = minTime
         let maxTimeTemp = maxTime
 
-        // Choose first axis limits as given
+        // Set new initial axis limits, if given
         if (start != null && end != null && start >= minTime && end <= maxTime) {
-            // round to nearest minute
+            // Round to nearest minute
             start = getRoundedDate(1, start)
             end = getRoundedDate(1, end)
-
             minTimeTemp = start
             maxTimeTemp = end
         }
         // --------------------------------------------------------------------------
+
         // Add X axis
         const x = d3.scaleTime()
             .domain([minTimeTemp, maxTimeTemp])
@@ -94,36 +89,40 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
         let yAxis = svg.append("g")
             .call(d3.axisLeft(y));
 
-        // get unit -- implemented by Marit
-        function unit(param){
+        // Units - added by Marit
+        const unitHR = " [BPM]"
+        const unitTemp = " [F]"
+
+        // Get unit - implemented by Marit
+        function unit(param) {
             unit = "";
-            if(param == "HR"){
-            unit = unitHR;
-            } else if (param == "Temperature"){
-            unit = unitTemp;
+            if (param == "HR") {
+                unit = unitHR;
+            } else if (param == "Temperature") {
+                unit = unitTemp;
             }
             return unit;
         }
 
-        // adds x-axis label - changed by Marit
+        // Add X-axis label - modified by Marit
         svg.append("text")
             .attr("text-anchor", "end")
-            .attr("x", width/2 + margin.left)
+            .attr("x", width / 2 + margin.left)
             .attr("y", height + margin.top + 10)
             .style("font-size", "14px")
             .style("font-family", "Arial")
             .text("Time");
 
-
-        // adds y-axis label - changed by Marit
+        // Add Y-axis label - modified by Marit
         svg.append("text")
             .attr("text-anchor", "end")
             .style("font-size", "14px")
             .style("font-family", "Arial")
             .attr("transform", "rotate(-90)")
-            .attr("y", -margin.left/2.8)
-            .attr("x", -margin.top )
-            .text(visparameter+ unit(visparameter));
+            .attr("y", -margin.left / 2.8)
+            .attr("x", -margin.top)
+            .text(visparameter + unit(visparameter));
+
 
         // Add a clipPath: everything out of this area won't be drawn.
         var clip = svg.append("defs").append("svg:clipPath")
@@ -161,20 +160,7 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
             .attr("class", "brush")
             .call(brush);
 
-        // Uniformly sample the given number of points from the selection
-        const chooseRandom = (arr, num = 1) => {
-            const res = [];
-            for(let i = 0; i < num; ){
-                const random = Math.floor(Math.random() * arr.length);
-                if(res.indexOf(arr[random]) !== -1){
-                    continue;
-                };
-                res.push(arr[random]);
-                i++;
-            };
-            return res;
-        };
-
+        // Uniformly sample the given number of datapoints
         let selection = Array.from({length: sampleSize}, () => Math.floor(Math.random() * data.length));
         let origSampleSize = sampleSize
 
@@ -213,14 +199,16 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
         }
         plotDots(selectionIncludes)
 
-        // A function that set idleTimeOut to null
+        // A function that sets idleTimeOut to null
         var idleTimeout
 
         function idled() {
             idleTimeout = null;
         }
 
+        // Initialize the new brush selection sample
         selectionCombined = selection.slice()
+
         // A function that updates the chart for given boundaries
         function updateChart(event) {
             extent = event.selection
@@ -236,12 +224,14 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
                 document.getElementById('range').innerHTML = 'Enter number of dots to sample (' + origSampleSize + '-10,000):'
                 sampleSize = origSampleSize
                 selectionCombined = selection.slice()
+
                 // Add dots
                 plotDots(selectionIncludes)
             } else {
                 // Snap brush to full minute
                 x.domain([getRoundedDate(1, x.invert(extent[0])), getRoundedDate(1, x.invert(extent[1]))])
                 scatter.select(".brush").call(brush.move, null)
+
                 // New dots
                 const minTimeEqual = (element) => element.Time.getTime() == x.domain()[0].getTime();
                 const maxTimeEqual = (element) => element.Time.getTime() == x.domain()[1].getTime();
@@ -254,22 +244,20 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
                     return ind[0] < element && element < ind[1] && eval("data[element]." + visparameter) != null;
                 }
 
+                // Update sampled datapoints
                 let sampleSizeNew = sampleSize - selectionCombined.filter(isInbetween.bind(this, [minTimeInd, maxTimeInd])).length
                 let selectionNew = Array.from({length: sampleSizeNew}, () => Math.floor(Math.random() * timeIndDiff + minTimeInd));
                 selectionCombined = [...selectionCombined, ...selectionNew];
 
-                // Define new filter Function
+                // Define new filter function
                 const selectionNewIncludes = function (d, i) {
                     if (selectionNew.includes(i) && eval("d." + visparameter) != null) {
                         return i
                     }
                 }
                 plotDots(selectionNewIncludes)
-
-                // Print new minTime and maxTime
-                // console.log(x.domain()[0])
-                // console.log(x.domain()[1])
             }
+
             // Update axis and circle position
             xAxis.transition().duration(1000).call(d3.axisBottom(x))
             scatter
@@ -288,9 +276,10 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
 
         // A function that updates the sampleSize
         d3.select("#submit")
-            .on("click", function() {
+            .on("click", function () {
                 let newSampleSize = document.getElementById('sampleSize').value
                 if (toNumber(newSampleSize) > toNumber(sampleSize)) {
+                    // Update sampleSize in input field
                     sampleSize = newSampleSize
                     document.getElementById('sampleSize').value = ''
                     document.getElementById('sampleSize').setAttribute("min", newSampleSize);
@@ -308,6 +297,7 @@ function scatterplot(visparameter, divName, titleID, dotcolor, sampleSize, start
                         return ind[0] < element && element < ind[1] && eval("data[element]." + visparameter) != null;
                     }
 
+                    // Sample new dots
                     let sampleSizeNew = newSampleSize - selectionCombined.filter(isInbetween.bind(this, [minTimeInd, maxTimeInd])).length
                     let selectionNew = Array.from({length: sampleSizeNew}, () => Math.floor(Math.random() * timeIndDiff + minTimeInd));
                     selectionCombined = [...selectionCombined, ...selectionNew];
