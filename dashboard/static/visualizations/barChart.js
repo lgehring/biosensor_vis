@@ -1,4 +1,8 @@
-function barChart(param, div, color){
+/***
+ * @author Lea Heinen
+ ***/
+
+ function barChart(param, div, color){
 	console.log("colors colors on the wall");
 	// elements from html file (buttons and checkbox)
 	const buttonMonth_div = document.getElementById("ButtonMonth");

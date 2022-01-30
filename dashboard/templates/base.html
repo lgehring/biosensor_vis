@@ -6,10 +6,10 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='baseStyle.css') }}" >
-    <link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='dataAnalysis.css') }}" >
+    <link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='/stylesheets/baseStyle.css') }}" >
     <script src="https://d3js.org/d3.v7.min.js" charset="utf-8"></script>
     <title>Biosensor Data Visualization</title>
+    <!-- import icons package-->
     <script src="https://kit.fontawesome.com/373611f8dc.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -36,9 +36,6 @@
         <a href="{{ url_for('Data_Analysis') }}"><i class="fas fa-search fa-fw"></i> Data Analysis </a><i class="fas fa-info-circle" title="Analyze the correlation between your data and your patterns"></i><br>
         <a href="{{ url_for('About') }}"><i class="fas fa-info fa-fw"></i> About </a><i class="fas fa-info-circle" title="Get information about this website"></i><br>
     </div>
-
-    <!-- Add extandable content -->
-    <!-- source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible_animate -->
 
     {% block content %}
     {% endblock %}

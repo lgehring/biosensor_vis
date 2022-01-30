@@ -1,5 +1,8 @@
+/***
+ * @author Lea Heinen
+ ***/
+
 comboBox = document.getElementById("combo")
-console.log("He");
 
 function bubbleChart(div){
 	// Helping functions:
