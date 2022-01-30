@@ -109,97 +109,101 @@ function barChart(param, div){
 	}
 
 
-	function handleClick(date){
-		enableDoubleClick = true
-	  datePrecision = getPrecision(date)
+	function getTimeRange(startDate, endDate){
+			// gets a time range from the first possible moment of the start date
+			// and the last possible moment of the end date
+			// e.g. Mar 2015, Apr 2016
+			//			--> 1st Mar 2015 00:00:00 and 30st Apr 2015 00:00:00
+			datePrecision = getPrecision(startDate)
+			switch (datePrecision) {
+				case "Month":
+				  // first day of first given month
+					start = new Date(startDate)
+					// last day of second given month
+					end = new Date(endDate)
+					daysInMonth = getDaysInMonth(end)
+					end.setDate(end.getDate() + daysInMonth -1)
+					end.setHours(23); end.setMinutes(59);
+					break;
+				case "Week":
+				  // get first day of first given week
+					week1 = startDate.split(" ")[1].split("/")[0]
+					year1 = startDate.split("/")[1]
+					weekDays1 = getWeekDays(week1, year1)
+					start = weekDays1[0]
+					// get last day of second given week
+					week2 = endDate.split(" ")[1].split("/")[0]
+					year2 = endDate.split("/")[1]
+					weekDays2 = getWeekDays(week2, year2)
+					end = weekDays2[1]
+					end.setHours(23); end.setMinutes(59);
+					break;
+				case "Day":
+				  // first hour + minute of first given day
+					start = parseEuropeanDate(startDate)
+					// last hour + minute of second given day
+					end = parseEuropeanDate(endDate);
+					end.setHours(23); end.setMinutes(59);
+					break;
+				case "Hour":
+				 // get first minute of first given hour
+					start = parseEuropeanDate(startDate)
+					// get last minute of second given hour
+					end = parseEuropeanDate(endDate);
+					end.setMinutes(59);
+					break;
+				case "Minute":
+				  // nothing should happen here (same as minute)
+					start = parseEuropeanDate(startDate)
+					end  = parseEuropeanDate(endDate)
+					start.setMinutes(0); end.setMinutes(59);
+					break;
 
-		switch (datePrecision) {
-			case "Month":
-				dataArray = nestedDataDays;
-				dateDateTime = new Date(date)
-				daysInMonth = getDaysInMonth(dateDateTime)
-				startDate = parseDateDays(dateDateTime)
-				dateDateTime.setDate(dateDateTime.getDate() + daysInMonth - 1)
-				endDate = parseDateDays(dateDateTime)
-				break;
-			case "Week":
-				dataArray = nestedDataDays;
-				week = date.slice(3,5)
-				year = date.slice(-4)
-				weekDays = getWeekDays(week, year)
-				startDate = parseDateDays(weekDays[0])
-				endDate = parseDateDays(weekDays[1])
-				break;
-			case "Day":
-				dataArray = nestedDataHours
-				startDate = parseDateHours(parseEuropeanDate(date))
-				endDateDateTime = parseEuropeanDate(date)
-				endDateDateTime.setHours(23);
-				endDate = parseDateHours(endDateDateTime)
-				break;
-			case "Hour":
-				dataArray = nestedDataMinutes
-				startDate = date
-				endDateDateTime = parseEuropeanDate(date)
-				endDateDateTime.setMinutes(59);
-				endDate = parseDateMinutes(endDateDateTime)
-				break;
-			case "Minute":  // graph should not zoom in any further
-				dataArray = nestedDataMinutes
-				startDateDateTime = parseEuropeanDate(date).setMinutes(0)
-				endDateDateTime = parseEuropeanDate(date).setMinutes(59)
-				startDate = parseDateMinutes(startDateDateTime)
-				endDate = parseDateMinutes(endDateDateTime)
-				enableDoubleClick = false
-				alert("Zooming in further not possible.")
+			}
+					return [start, end]
+			}
 
+
+		function handleClick(date){
+			// handles the click on a bar
+			enableDoubleClick = true
+		  datePrecision = getPrecision(date)
+			startDate = getTimeRange(date, date)[0]
+			endDate = getTimeRange(date, date)[1]
+			switch (datePrecision) {
+				case "Month":
+					// parses the dates correclty and selects the correct dataArray for rendering
+					startDate = parseDateDays(startDate); endDate = parseDateDays(endDate)
+					dataArray = nestedDataDays;
+					break;
+				case "Week":
+					startDate = parseDateDays(startDate); endDate = parseDateDays(endDate)
+					dataArray = nestedDataDays;
+					break;
+				case "Day":
+					startDate = parseDateHours(startDate); endDate = parseDateHours(endDate)
+					dataArray = nestedDataHours
+					break;
+				case "Hour":
+				  startDate = parseDateMinutes(startDate); endDate = parseDateMinutes(endDate)
+					dataArray = nestedDataMinutes
+					break;
+				case "Minute":  // graph should not zoom in any
+				  alert("Zooming in further not possible.")
+					enableDoubleClick = false
+					return;
+
+			}
+			render(dataArray, startDate, endDate)
 		}
-		render(dataArray, startDate, endDate)
-	}
 
-	function getTitle(startDate, endDate){
-		datePrecision = getPrecision(startDate)
-		switch (datePrecision) {
-			case "Month":
-				startTitle = parseDateTitle(new Date(startDate))
-				endDateDateTime = new Date(endDate)
-				daysInMonth = getDaysInMonth(endDateDateTime)
-				endDateDateTime.setDate(endDateDateTime.getDate() + daysInMonth -1)
-				endDateDateTime.setHours(23); endDateDateTime.setMinutes(59);
-				endTitle = parseDateTitle(endDateDateTime);
-				break;
-		 	case "Week":
-				week1 = startDate.slice(3,5)
-				year1 = startDate.slice(-4)
-				weekDays1 = getWeekDays(week1, year1)
-				startTitle = parseDateTitle(weekDays1[0])
-				week2 = endDate.slice(3,5)
-				year2 = endDate.slice(-4)
-				weekDays2 = getWeekDays(week2, year2)
-				endDateDateTime = weekDays2[1]
-				endDateDateTime.setHours(23); endDateDateTime.setMinutes(59);
-				endTitle = parseDateTitle(endDateDateTime)
-				break;
-			case "Day":
-			  startTitle = parseDateTitle(parseEuropeanDate(startDate))
-				endDateDateTime = parseEuropeanDate(endDate);
-				endDateDateTime.setHours(23); endDateDateTime.setMinutes(59);
-				endTitle = parseDateTitle(endDateDateTime)
-				break;
-			case "Hour":
-				startTitle = parseDateTitle(parseEuropeanDate(startDate))
-				endDateDateTime = parseEuropeanDate(endDate);
-				endDateDateTime.setMinutes(59);
-				endTitle = parseDateTitle(endDateDateTime)
-				break;
-			case "Minute":
-				startTitle = parseDateTitle(parseEuropeanDate(startDate))
-				endTitle = parseDateTitle(parseEuropeanDate(endDate))
-				break;
-
+		function getTitle(startDate, endDate){
+			start = getTimeRange(startDate, endDate)[0]
+			end = getTimeRange(startDate, endDate)[1]
+			startTitle = parseDateTitle(start)
+			endTitle = parseDateTitle(end)
+			return [startTitle, endTitle]
 		}
-				return [startTitle, endTitle]
-	}
 
 	/*
 	 set svg dimensions and margins
@@ -266,7 +270,7 @@ function barChart(param, div){
 
 		// adds x-axis label - changed by Marit
 		svg.append("text")
-			.attr("text-anchor", "end")			
+			.attr("text-anchor", "end")
 			.attr('class', 'axisLabel')
 			.attr("x", svgWidth/2 + margin.left)
 			.attr("y", svgHeight + margin.top + 10)
@@ -290,7 +294,7 @@ function barChart(param, div){
 	    .tickSizeOuter(0)
 	  const yAxisGroup = svg.append('g')
 	    .call(yAxis)
-	
+
 	// adds y-axis label - changed by Marit
 	svg.append("text")
 		.attr("text-anchor", "end")
@@ -340,9 +344,7 @@ function barChart(param, div){
 
 			brusher.call(brush)
 			svg.on("dblclick",function(){
-				console.log(enableDoubleClick);
 				if (enableDoubleClick){
-					console.log(enableDoubleClick);
 					 render(originalData, originalData[0], originalData.at(-1))
 				}});
 
