@@ -7,15 +7,15 @@
     --font: Arial, Helvetica, sans-serif;
     --menu_font_color: rgb(255, 255, 255);
     --font_color: rgb(78, 75, 75);
-    --HR_color: #e0432f; 
+    --HR_color: #e0432f;
     --Temp_color: #EB8015;
-    --Step_color:#245d96; 
+    --Step_color:#245d96;
     --Cal_color: #00963c;
     --Analysis_color: #4f6a8b;
   }
 
 body{
-    margin-left: var(--menu_width);     
+    margin-left: var(--menu_width);
     padding: 0px 10px;
 }
 p{
@@ -70,7 +70,7 @@ label{
 a:hover {
     color: var(--menu_color);
   }
-  
+
 /*style icons */
 i{
   align-items: right;
@@ -81,15 +81,15 @@ i:hover{
 
 /* menu*/
 .menu {
-    height: 100%;           
-    width: var(--menu_width); 
-    position: fixed;    
+    height: 100%;
+    width: var(--menu_width);
+    position: fixed;
     z-index: 1;
-    top: 0; 
+    top: 0;
     left: 0;
-    background-color: var(--menu_color); 
+    background-color: var(--menu_color);
   }
-  
+
   /*menu links*/
   .menu a {
     padding: 8px 0px 0px 0px;
@@ -237,4 +237,16 @@ i:hover{
   overflow: hidden;
   transition: max-height 0.2s ease-out;
 }
-  
+
+#link{
+  font-size: 14px;
+  color: blue;
+}
+#link:hover{
+  text-decoration: underline;
+}
+
+h3{
+  color: rgb(54,54,54);
+  font-family: sans-serif;
+}

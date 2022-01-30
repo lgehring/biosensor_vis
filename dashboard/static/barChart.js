@@ -1,5 +1,5 @@
-function barChart(param, div){
-
+function barChart(param, div, color){
+	console.log("colors colors on the wall");
 	// elements from html file (buttons and checkbox)
 	const buttonMonth_div = document.getElementById("ButtonMonth");
 	const buttonWeek_div = document.getElementById("ButtonWeek");
@@ -8,10 +8,10 @@ function barChart(param, div){
 	const statCheck_div = document.getElementById("stat");
 
 	// Helping functions:
-	const parseDateMinutes = d3.timeFormat("%d.%m.%Y, %H:%M");
+	const parseDateMinutes = d3.timeFormat("%d.%m.%Y %H:%M");
 	const parseDateHours = d3.timeFormat("%d.%m.%Y, %H:00");
 	const parseDateDays = d3.timeFormat("%d.%m.%Y");
-	const parseDateWeeks = d3.timeFormat("CW %U/%Y");
+	const parseDateWeeks = d3.timeFormat("CW %V/%Y");
 	const parseDateMonths = d3.timeFormat("%b %Y");
 	const parseDateTitle = d3.timeFormat("%a %d.%m.%Y, %H:%M")
 
@@ -78,7 +78,7 @@ function barChart(param, div){
 			datePrecision = "Week"
 		} else if (/[0-9]{2}\.[0-9]{2}\.[0-9]{4}, [0-9]{2}:[0]{2}/.test(date)){
 			datePrecision = "Hour"
-		} else if (/[0-9]{2}\.[0-9]{2}\.[0-9]{4}, [0-9]{2}:[0-9]{2}/.test(date)){
+		} else if (/[0-9]{2}\.[0-9]{2}\.[0-9]{4} [0-9]{2}:[0-9]{2}/.test(date)){
 			datePrecision = "Minute"
 		} else {
 			datePrecision = "Day"
@@ -115,6 +115,7 @@ function barChart(param, div){
 			// e.g. Mar 2015, Apr 2016
 			//			--> 1st Mar 2015 00:00:00 and 30st Apr 2015 00:00:00
 			datePrecision = getPrecision(startDate)
+			console.log(datePrecision);
 			switch (datePrecision) {
 				case "Month":
 				  // first day of first given month
@@ -137,6 +138,8 @@ function barChart(param, div){
 					weekDays2 = getWeekDays(week2, year2)
 					end = weekDays2[1]
 					end.setHours(23); end.setMinutes(59);
+					console.log("start: " + start);
+					console.log("end: " + end);
 					break;
 				case "Day":
 				  // first hour + minute of first given day
@@ -330,6 +333,7 @@ function barChart(param, div){
 				.attr("y", d => yScale(d.value))
 				.attr("height", d => svgHeight - yScale(d.value))
 				.attr("width", xScale.bandwidth())
+				.style("fill", color)
 				.on("click", (i, d) => handleClick(d.date))
 				.append("title")
 					.text(d => "Date " + d.date + "\n" + param + ": " + d.value)
