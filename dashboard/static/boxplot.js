@@ -73,7 +73,6 @@ function boxplot(visparameter, divName, boxcolor, start = null, end = null) {
         let interQuantileRange = q3 - q1
         let min = q1 - 1.5 * interQuantileRange
         let max = q1 + 1.5 * interQuantileRange
-        console.log(visparamData_sorted)
         
 
         // adds y-axis label - changed by Marit
