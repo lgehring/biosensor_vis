@@ -114,13 +114,25 @@ function bubbleChart(div){
 			.domain(d3.extent(dataArray, zVal))
 			.range([1, 16])
 
+		// Modulate base colors for maximum brightness difference -- added by Lukas
+		var bubbleColorLight = {
+			"HR": "rgb(255, 95, 75)",
+			"Steps": "rgb(141, 198, 255)",
+			"Calories": "rgb(105, 255, 165)",
+			"Temperature": "rgb(255, 148, 41)"
+		};
+		var bubbleColorDark = {
+			"HR": "rgb(180, 20, 0)",
+			"Steps": "rgb(0, 57, 114)",
+			"Calories": "rgb(0, 150, 60)",
+			"Temperature": "rgb(214, 107, 0)"
+		};
+
 		var circleFill = d3.scaleSequential()
 			.domain(d3.extent(dataArray, zVal))
-	    .interpolator(d3.interpolateRgb("rgb(134, 164, 255)", "rgb(3, 23, 88)"))
-
+	    .interpolator(d3.interpolateRgb(bubbleColorLight[param], bubbleColorDark[param])) // -- modified by Lukas
 
 		// rendering the plot
-
 		svg.selectAll("circles")
 			.data(dataArray)
 			.enter()
